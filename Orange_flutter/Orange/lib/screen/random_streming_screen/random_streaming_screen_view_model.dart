@@ -115,7 +115,7 @@ class RandomStreamingScreenViewModel extends BaseViewModel {
           notifyListeners();
         },
         // Real-time audio volume for avatar mouth animation
-        onAudioVolumeIndication: (RtcConnection connection, List<AudioVolumeInfo> speakers, int totalVolume) {
+        onAudioVolumeIndication: (RtcConnection connection, List<AudioVolumeInfo> speakers, int totalVolume, int vad) {
           for (var speaker in speakers) {
             if (speaker.uid == 0) {
               final double normalizedVolume = (speaker.volume ?? 0) / 255.0;

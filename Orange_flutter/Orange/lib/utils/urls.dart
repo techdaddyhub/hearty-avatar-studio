@@ -1,6 +1,10 @@
 import 'package:orange_ui/utils/const_res.dart';
 
 class Urls {
+  ///------------------------ Base Constants ------------------------///
+  static const String aBaseUrl = ConstRes.aBaseUrl;
+  static const String apiKey = ConstRes.apiKey;
+
   ///------------------------ Urls ------------------------///
   static const String aGetProfile = '${ConstRes.aBaseUrl}getProfile';
   static const String aFetchMyUserProfile =

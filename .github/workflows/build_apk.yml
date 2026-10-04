@@ -37,7 +37,7 @@ jobs:
       - name: Build Release APK
         run: |
           cd Orange_flutter/Orange
-          flutter build apk --release --no-tree-shake-icons
+          flutter build apk --release --no-tree-shake-icons --android-skip-build-dependency-validation
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
@@ -45,3 +45,4 @@ jobs:
           name: hearty-avatar-studio-release-apk
           path: Orange_flutter/Orange/build/app/outputs/flutter-apk/app-release.apk
           retention-days: 30
+

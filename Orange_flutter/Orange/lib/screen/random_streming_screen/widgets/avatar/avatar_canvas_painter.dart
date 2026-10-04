@@ -36,9 +36,10 @@ class AvatarCanvasPainter extends CustomPainter {
 
     final headSkewX = pose.yaw * 0.25;
     final headSkewY = pose.pitch * 0.25;
-    canvas.transform(Matrix4.identity()
-      .applyToVector3Array([headSkewX, headSkewY, 0.0])
-    );
+    final matrix = Matrix4.identity()
+      ..setEntry(0, 1, headSkewX)
+      ..setEntry(1, 0, headSkewY);
+    canvas.transform(matrix.storage);
 
     // Draw head base, ears, hair, face
     _drawHead(canvas, Offset.zero, baseRadius);
