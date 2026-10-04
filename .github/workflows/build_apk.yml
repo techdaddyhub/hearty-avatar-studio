@@ -8,6 +8,9 @@ on:
       - 'Orange_flutter/**'
       - '.github/workflows/build_apk.yml'
 
+permissions:
+  contents: write
+
 jobs:
   build-apk:
     name: Build Release APK
@@ -39,10 +42,46 @@ jobs:
           cd Orange_flutter/Orange
           flutter build apk --release --no-tree-shake-icons --android-skip-build-dependency-validation
 
+      - name: Verify and Log APK Information
+        run: |
+          APK_PATH="Orange_flutter/Orange/build/app/outputs/flutter-apk/app-release.apk"
+          if [ -f "$APK_PATH" ]; then
+            echo "=== APK BUILT SUCCESSFULLY ==="
+            ls -lh "$APK_PATH"
+            sha256sum "$APK_PATH"
+          else
+            echo "ERROR: APK file not found at $APK_PATH"
+            exit 1
+          fi
+
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: hearty-avatar-studio-release-apk
           path: Orange_flutter/Orange/build/app/outputs/flutter-apk/app-release.apk
           retention-days: 30
+
+      - name: Create or Update GitHub Release
+        uses: softprops/action-gh-release@v2
+        continue-on-error: true
+        with:
+          tag_name: v1.0.0
+          name: "Hearty Avatar Studio Android Release v1.0.0"
+          body: |
+            ## Hearty AI Avatar Studio & Social Streaming Platform - Android Release
+            
+            ### Included Features:
+            - AI Avatar Live Puppeteering & Canvas Rendering
+            - Real-time Viseme & Voice Audio Volume Synchronization
+            - Agora RTC Live Video & Audio Streaming
+            - Multi-platform OBS & RTMP Gateway Controls
+            - Social Dating, Video Calling & Wallet System
+            
+            ### Default Accounts:
+            - **Admin Dashboard**: `admin` / `admin@123!@#`
+            - **Demo User**: `hearty_demo` / `password123`
+            
+            ### Direct Download:
+            Download `app-release.apk` below and install directly onto your Android device.
+          files: Orange_flutter/Orange/build/app/outputs/flutter-apk/app-release.apk
 
