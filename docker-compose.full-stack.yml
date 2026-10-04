@@ -17,7 +17,6 @@ services:
       - mysql_data:/var/lib/mysql
       - ./orange_database.sql:/docker-entrypoint-initdb.d/01_orange_database.sql:ro
       - ./database_extensions.sql:/docker-entrypoint-initdb.d/02_database_extensions.sql:ro
-      - ./default_seed_accounts.sql:/docker-entrypoint-initdb.d/03_default_seed_accounts.sql:ro
     networks:
       - avatar_platform_net
     healthcheck:

@@ -21,6 +21,15 @@ jobs:
           php-version: '8.2'
           extensions: mbstring, xml, ctype, iconv, intl, pdo_mysql, bcmath, json
           coverage: none
+          tools: composer:v2
+
+      - name: Install Composer Dependencies
+        run: |
+          cd orange_backend/orange_backend
+          cp .env.example .env
+          composer install --no-interaction --prefer-dist --no-progress --ignore-platform-reqs
+          php artisan key:generate
+
 
       - name: Setup Node.js Environment
         uses: actions/setup-node@v4
