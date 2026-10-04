@@ -1,0 +1,90 @@
+version: "3.9"
+
+services:
+  # -------------------------------------------------------------
+  # MySQL 8.0 Relational Database
+  # -------------------------------------------------------------
+  mysql:
+    image: mysql:8.0
+    container_name: avatar_studio_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: orange
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./orange_database.sql:/docker-entrypoint-initdb.d/01_orange_database.sql:ro
+      - ./database_extensions.sql:/docker-entrypoint-initdb.d/02_database_extensions.sql:ro
+    networks:
+      - avatar_platform_net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # -------------------------------------------------------------
+  # Redis In-Memory State & Cache
+  # -------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: avatar_studio_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - avatar_platform_net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # -------------------------------------------------------------
+  # LiveKit WebRTC SFU Server
+  # -------------------------------------------------------------
+  livekit:
+    image: livekit/livekit-server:v1.7.2
+    container_name: avatar_studio_livekit
+    restart: unless-stopped
+    command: --config /etc/livekit.yaml
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./livekit/livekit.yaml:/etc/livekit.yaml:ro
+    ports:
+      - "7880:7880"
+      - "7881:7881"
+      - "50000-50100:50000-50100/udp"
+    networks:
+      - avatar_platform_net
+
+  # -------------------------------------------------------------
+  # Streaming Gateway (Node.js + Hardware/Software FFmpeg fan-out)
+  # -------------------------------------------------------------
+  streaming_gateway:
+    build:
+      context: ./streaming-gateway
+      dockerfile: Dockerfile
+    container_name: avatar_studio_gateway
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      PORT: 3001
+      NODE_ENV: production
+    networks:
+      - avatar_platform_net
+
+volumes:
+  mysql_data:
+  redis_data:
+
+networks:
+  avatar_platform_net:
+    driver: bridge

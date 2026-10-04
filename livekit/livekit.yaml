@@ -1,0 +1,36 @@
+port: 7880
+bind_addresses:
+  - ""
+
+rtc:
+  tcp_port: 7881
+  port_range_start: 50000
+  port_range_end: 50100
+  use_external_ip: false
+  # Enable packet loss recovery and high bandwidth audio/video profiles
+  packet_loss_target: 0.05
+  congestion_control:
+    allow_pause: true
+
+turn:
+  enabled: false
+
+# Redis for horizontal clustering and session sync
+redis:
+  address: redis:6379
+  username: ""
+  password: ""
+  db: 0
+
+# API Keys: Pairs of API Key -> API Secret
+keys:
+  devkey: secret_dev_key_avatar_studio_2026
+
+logging:
+  json: false
+  level: info
+
+room:
+  auto_create: true
+  empty_timeout: 300
+  max_participants: 100

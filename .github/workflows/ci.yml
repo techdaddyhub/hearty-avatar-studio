@@ -1,0 +1,56 @@
+name: Avatar Studio CI & Verification
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  verify-platform:
+    name: Full Platform Verification
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP Environment
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, xml, ctype, iconv, intl, pdo_mysql, bcmath, json
+          coverage: none
+
+      - name: Setup Node.js Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install FFmpeg & Build Tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg clang cmake make
+
+      - name: Build Native C/C++ Engine
+        run: |
+          cd native_engine
+          chmod +x build.sh
+          ./build.sh
+
+      - name: Install Streaming Gateway Dependencies
+        run: |
+          cd streaming-gateway
+          npm install
+
+      - name: Run Platform Verification Suite
+        run: |
+          chmod +x scripts/test_avatar_studio_platform.sh
+          ./scripts/test_avatar_studio_platform.sh
+
+      - name: Validate LiveKit SFU Configuration
+        run: |
+          test -f livekit/livekit.yaml
+          test -f livekit/docker-compose.yml
+          test -f docker-compose.full-stack.yml
+          echo "LiveKit deployment files successfully verified."

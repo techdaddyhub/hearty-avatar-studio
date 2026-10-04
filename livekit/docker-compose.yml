@@ -1,0 +1,47 @@
+version: "3.9"
+
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: avatar_studio_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - avatar_net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  livekit:
+    image: livekit/livekit-server:v1.7.2
+    container_name: avatar_studio_livekit
+    restart: unless-stopped
+    command: --config /etc/livekit.yaml
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./livekit.yaml:/etc/livekit.yaml:ro
+    ports:
+      # Signaling & HTTP / WebSockets
+      - "7880:7880"
+      # WebRTC TCP Fallback
+      - "7881:7881"
+      # WebRTC UDP Media Ports
+      - "50000-50100:50000-50100/udp"
+    networks:
+      - avatar_net
+    environment:
+      - LIVEKIT_KEYS=devkey: secret_dev_key_avatar_studio_2026
+
+volumes:
+  redis_data:
+
+networks:
+  avatar_net:
+    driver: bridge

@@ -1,0 +1,64 @@
+# Operating System Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+__MACOSX/
+
+# Environment and Secrets
+.env
+.env.backup
+.env.production
+.env.local
+*.key
+*.pem
+auth.json
+
+# Laravel Backend Exclusions
+orange_backend/orange_backend/vendor/
+orange_backend/orange_backend/node_modules/
+orange_backend/orange_backend/public/storage
+orange_backend/orange_backend/public/hot
+orange_backend/orange_backend/storage/*.key
+orange_backend/orange_backend/storage/framework/cache/data/*
+!orange_backend/orange_backend/storage/framework/cache/data/.gitignore
+orange_backend/orange_backend/storage/framework/sessions/*
+!orange_backend/orange_backend/storage/framework/sessions/.gitignore
+orange_backend/orange_backend/storage/framework/testing/*
+!orange_backend/orange_backend/storage/framework/testing/.gitignore
+orange_backend/orange_backend/storage/framework/views/*
+!orange_backend/orange_backend/storage/framework/views/.gitignore
+orange_backend/orange_backend/storage/logs/*.log
+Homestead.json
+Homestead.yaml
+
+# Flutter & Dart Exclusions
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+Orange_flutter/Orange/build/
+Orange_flutter/Orange/.flutter-plugins
+Orange_flutter/Orange/.flutter-plugins-dependencies
+Orange_flutter/Orange/android/app/build/
+Orange_flutter/Orange/android/app/debug/
+Orange_flutter/Orange/android/app/profile/
+Orange_flutter/Orange/android/app/release/
+Orange_flutter/Orange/ios/build/
+Orange_flutter/Orange/ios/Flutter/.last_build_id
+Orange_flutter/Orange/lib/generated_plugin_registrant.dart
+*.iml
+.idea/
+.vscode/
+
+# Streaming Gateway Node.js Exclusions
+streaming-gateway/node_modules/
+streaming-gateway/npm-debug.log*
+streaming-gateway/yarn-error.log*
+
+# Native Engine Build Artifacts
+native_engine/build/
+native_engine/*.o
