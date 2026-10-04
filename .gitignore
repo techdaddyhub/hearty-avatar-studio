@@ -64,3 +64,4 @@ streaming-gateway/yarn-error.log*
 # Native Engine Build Artifacts
 native_engine/build/
 native_engine/*.o
+avatar-studio/
