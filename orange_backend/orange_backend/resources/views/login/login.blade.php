@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
     <title>{{ Session::get('app_name', 'Hearty') }} - Admin</title>
-    <link rel="icon" type="image/png" href="{{ asset('asset/img/favicon.png') }}">
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('asset/img/favicon.ico') }}">
+    <link rel="icon" type="image/png" href="{{ asset('asset/img/hearty_heart_emblem.png') }}?v={{ time() }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('asset/img/favicon.ico') }}?v={{ time() }}">
 
     <link rel="stylesheet" href="{{ asset('asset/css/bootstrap.min.css') }}" type="text/css" />
     <link rel="stylesheet" href="{{ asset('asset/cdncss/iziToast.css') }}" type="text/css" />
@@ -21,7 +21,7 @@
                     <div class="login-box">
                         <div class="text-center mb-4">
                             <a href="{{ url('/') }}">
-                                <img src="{{ asset('asset/img/hearty_logo_dark.png') }}" alt="Hearty Logo" style="max-height: 64px; max-width: 220px; object-fit: contain;">
+                                <img src="{{ asset('asset/img/hearty_sidebar_logo.png') }}?v={{ time() }}" alt="Hearty Logo" style="max-height: 64px; max-width: 220px; object-fit: contain;">
                             </a>
                         </div>
                         <div class="card login-card">

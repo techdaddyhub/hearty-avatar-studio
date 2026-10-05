@@ -11,8 +11,8 @@
     <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script> -->
     <script src="{{ asset('asset/js/jquery-3.7.1.min.js') }}"></script>
     @yield('header')
-    <link rel="icon" type="image/png" href="{{ asset('asset/img/favicon.png') }}">
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('asset/img/favicon.ico') }}">
+    <link rel="icon" type="image/png" href="{{ asset('asset/img/hearty_heart_emblem.png') }}?v={{ time() }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('asset/img/favicon.ico') }}?v={{ time() }}">
     <link rel="stylesheet" href="{{ asset('asset/css/app.min.css') }}">
     <link rel="stylesheet" href="{{ asset('asset/css/components.css') }}">
     <link rel="stylesheet" href="{{ asset('asset/css/custom.css') }}">
@@ -59,14 +59,14 @@
             <div class="main-sidebar sidebar-style-2">
                 <aside id="sidebar-wrapper">
                     <div class="sidebar-brand">
-                        <a href="{{ route('index') }}" class="d-flex align-items-center justify-content-center">
-                            <img alt="Hearty" src="{{ asset('asset/img/favicon.png') }}" class="header-logo" style="height: 36px; width: 36px; object-fit: contain; margin-right: 8px;" />
-                            <span class="logo-name" style="font-weight: 700; font-size: 1.25rem;"> {!! Session::get('app_name', 'Hearty') !!} </span>
+                        <a href="{{ route('index') }}" class="d-flex align-items-center justify-content-center" style="height: 100%; text-decoration: none;">
+                            <img alt="Hearty" src="{{ asset('asset/img/hearty_heart_emblem.png') }}?v={{ time() }}" class="header-logo" style="height: 38px; width: 38px; object-fit: contain; margin-right: 8px;" />
+                            <span class="logo-name" style="font-weight: 700; font-size: 1.3rem; color: #16101D;"> {!! Session::get('app_name', 'Hearty') !!} </span>
                         </a>
                     </div>
                     <div class="sidebar-brand sidebar-brand-sm">
-                        <a href="{{ route('index') }}" class="d-flex align-items-center justify-content-center">
-                            <img alt="Hearty" src="{{ asset('asset/img/favicon.png') }}" class="header-logo" style="height: 32px; width: 32px; object-fit: contain;" />
+                        <a href="{{ route('index') }}" class="d-flex align-items-center justify-content-center" style="height: 100%;">
+                            <img alt="Hearty" src="{{ asset('asset/img/hearty_heart_emblem.png') }}?v={{ time() }}" class="header-logo" style="height: 32px; width: 32px; object-fit: contain;" />
                         </a>
                     </div>
                     <ul class="sidebar-menu">
