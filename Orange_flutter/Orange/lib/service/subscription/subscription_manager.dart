@@ -19,23 +19,29 @@ class SubscriptionManager {
   List<Package> offering = [];
 
   Future<void> initPlatformState() async {
-    PurchasesConfiguration configuration;
-    if (Platform.isAndroid) {
-      if (ConstRes.revenueCatAndroidApiKey.isNotEmpty) {
-        configuration =
-            PurchasesConfiguration(ConstRes.revenueCatAndroidApiKey);
-        Purchases.setLogLevel(LogLevel.debug);
-        await Purchases.configure(configuration);
+    try {
+      PurchasesConfiguration configuration;
+      if (Platform.isAndroid) {
+        if (ConstRes.revenueCatAndroidApiKey.isNotEmpty) {
+          configuration =
+              PurchasesConfiguration(ConstRes.revenueCatAndroidApiKey);
+          Purchases.setLogLevel(LogLevel.debug);
+          await Purchases.configure(configuration);
+        }
+      } else if (Platform.isIOS) {
+        if (ConstRes.revenueCatAppleApiKey.isNotEmpty) {
+          configuration = PurchasesConfiguration(ConstRes.revenueCatAppleApiKey);
+          Purchases.setLogLevel(LogLevel.debug);
+          await Purchases.configure(configuration);
+        }
       }
-    } else if (Platform.isIOS) {
-      if (ConstRes.revenueCatAppleApiKey.isNotEmpty) {
-        configuration = PurchasesConfiguration(ConstRes.revenueCatAppleApiKey);
-        Purchases.setLogLevel(LogLevel.debug);
-        await Purchases.configure(configuration);
+      await checkIsConfigured();
+      if (isPurchaseConfig) {
+        await fetchOfferings();
       }
+    } catch (e) {
+      log('SubscriptionManager init error: $e');
     }
-    await checkIsConfigured();
-    await fetchOfferings();
   }
 
   bool checkSubscription(CustomerInfo customerInfo) {

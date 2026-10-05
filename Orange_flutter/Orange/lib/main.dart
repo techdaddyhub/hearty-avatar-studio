@@ -44,15 +44,34 @@ Future<void> main() async {
   ));
 
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  await GetStorage.init('Orange');
-  LanguagesScreenViewModel.selectedLanguage =
-      SessionManager.instance.getString(key: SessionKeys.languageCode) ??
-          Platform.localeName.split('_')[0];
+  try {
+    await Firebase.initializeApp();
+  } catch (e) {
+    debugPrint('Firebase init error: $e');
+  }
+
+  try {
+    await GetStorage.init('Orange');
+  } catch (e) {
+    debugPrint('GetStorage init error: $e');
+  }
+
+  try {
+    LanguagesScreenViewModel.selectedLanguage =
+        SessionManager.instance.getString(key: SessionKeys.languageCode) ??
+            Platform.localeName.split('_')[0];
+  } catch (e) {
+    LanguagesScreenViewModel.selectedLanguage = 'en';
+  }
 
   // FirebaseNotificationManager.shared;
   // Set the background messaging handler early on, as a named top-level function
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  try {
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  } catch (e) {
+    debugPrint('FirebaseMessaging background error: $e');
+  }
+
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
   HttpOverrides.global = MyHttpOverrides();
@@ -62,7 +81,13 @@ Future<void> main() async {
     }
     FlutterError.presentError(details);
   };
-  SubscriptionManager.shared.initPlatformState();
+
+  try {
+    SubscriptionManager.shared.initPlatformState();
+  } catch (e) {
+    debugPrint('SubscriptionManager init error: $e');
+  }
+
   runApp(const RestartWidget(child: MyApp()));
 }
 
@@ -109,7 +134,11 @@ class _MyAppState extends State<MyApp> {
   }
 
   void consentForm() async {
-    AdsService.requestConsentInfoUpdate();
+    try {
+      AdsService.requestConsentInfoUpdate();
+    } catch (e) {
+      debugPrint('Consent form error: $e');
+    }
   }
 }
 

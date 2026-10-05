@@ -287,16 +287,25 @@ class ApiProvider {
   }
 
   Future<UserModel> fetchMyUserProfile() async {
-    http.Response response = await http.post(Uri.parse(Urls.aFetchMyUserProfile), headers: {
-      Urls.apiKeyName: ConstRes.apiKey
-    }, body: {
-      Urls.userId: myUserId,
-    });
-    UserModel profile = UserModel.fromJson(jsonDecode(response.body));
-    if (profile.status == true) {
-      SessionManager.instance.setUser(profile.data);
+    try {
+      if (ConstRes.base.contains('----') || !ConstRes.base.startsWith('http')) {
+        return UserModel(status: false, message: 'Base URL not configured');
+      }
+      http.Response response = await http.post(
+        Uri.parse(Urls.aFetchMyUserProfile),
+        headers: {Urls.apiKeyName: ConstRes.apiKey},
+        body: {
+          Urls.userId: myUserId,
+        },
+      ).timeout(const Duration(seconds: 3));
+      UserModel profile = UserModel.fromJson(jsonDecode(response.body));
+      if (profile.status == true) {
+        SessionManager.instance.setUser(profile.data);
+      }
+      return profile;
+    } catch (e) {
+      return UserModel(status: false, message: e.toString());
     }
-    return profile;
   }
 
   Future<UserModel> onOffNotification(int state) async {
@@ -348,15 +357,22 @@ class ApiProvider {
   }
 
   Future<SettingModel> getSettingData() async {
-    http.Response response = await http.post(
-      Uri.parse(Urls.aGetSettingData),
-      headers: {Urls.apiKeyName: ConstRes.apiKey},
-    );
-    SettingModel setting = SettingModel.fromJson(jsonDecode(response.body));
-    if (setting.status == true) {
-      SessionManager.instance.setSettings(setting.data);
+    try {
+      if (ConstRes.base.contains('----') || !ConstRes.base.startsWith('http')) {
+        return SettingModel(status: false, message: 'Base URL not configured');
+      }
+      http.Response response = await http.post(
+        Uri.parse(Urls.aGetSettingData),
+        headers: {Urls.apiKeyName: ConstRes.apiKey},
+      ).timeout(const Duration(seconds: 3));
+      SettingModel setting = SettingModel.fromJson(jsonDecode(response.body));
+      if (setting.status == true) {
+        SessionManager.instance.setSettings(setting.data);
+      }
+      return setting;
+    } catch (e) {
+      return SettingModel(status: false, message: e.toString());
     }
-    return setting;
   }
 
   Future<SearchUser> searchUser({required String searchKeyword, required int start}) async {
