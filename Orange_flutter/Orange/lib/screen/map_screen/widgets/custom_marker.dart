@@ -39,7 +39,7 @@ class _CustomMarkerState extends State<CustomMarker> {
                 width: 80,
                 child: ClipOval(
                   child: FadeInImage.assetNetwork(
-                    placeholder: AssetRes.themeLabel,
+                    placeholder: AssetRes.placeholder,
                     image: widget.imageUrl,
                     fit: BoxFit.cover,
                     placeholderErrorBuilder: (context, error, stackTrace) {

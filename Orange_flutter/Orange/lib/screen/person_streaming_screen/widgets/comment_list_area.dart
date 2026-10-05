@@ -59,7 +59,7 @@ class CommentListArea extends StatelessWidget {
                       cacheKey: '${commentList[index].userImage}',
                       errorWidget: (context, url, error) {
                         return Image.asset(
-                          AssetRes.themeLabel,
+                          AssetRes.placeholder,
                           width: 32,
                           height: 32,
                         );
@@ -106,7 +106,7 @@ class CommentListArea extends StatelessWidget {
                                       imageUrl: '${ConstRes.aImageBaseUrl}${commentList[index].comment}',
                                       cacheKey: '${ConstRes.aImageBaseUrl}${commentList[index].comment}',
                                       errorWidget: (context, url, error) {
-                                        return Image.asset(AssetRes.themeLabel, width: 40, height: 35);
+                                        return Image.asset(AssetRes.placeholder, width: 40, height: 35);
                                       },
                                       width: 40,
                                       height: 35,

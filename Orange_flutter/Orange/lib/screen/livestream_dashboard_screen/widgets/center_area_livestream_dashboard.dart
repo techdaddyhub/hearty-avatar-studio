@@ -111,7 +111,7 @@ class CenterAreaLiveStreamDashBoard extends StatelessWidget {
                                 ),
                                 const Spacer(),
                                 Image.asset(AssetRes.themeLabel,
-                                    height: 23, width: 76),
+                                    height: 23, width: 76, fit: BoxFit.contain),
                                 Text(S.current.liveCAp,
                                     style: const TextStyle(fontSize: 16))
                               ],

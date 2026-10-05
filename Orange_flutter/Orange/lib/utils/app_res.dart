@@ -2,7 +2,7 @@ import 'package:orange_ui/generated/l10n.dart';
 
 class AppRes {
   // AppName
-  static const String appName = 'Orange';
+  static const String appName = 'Hearty';
 
   // For Datetime
   static const String hmmA = "h:mm a";
@@ -43,7 +43,7 @@ class AppRes {
   static String defaultCurrencyCode = '\$';
 
   ///------------------------ Notification Topic ------------------------///
-  static const String subscribeTopic = 'orange';
+  static const String subscribeTopic = 'hearty';
   static const String liveStreamingTopic = 'liveStreaming';
 
   ///------------------------ Chat  ------------------------///

@@ -71,7 +71,7 @@ class ProfilePicArea extends StatelessWidget {
                                               .withValues(alpha: 0.2),
                                         ),
                                         child:
-                                            Image.asset(AssetRes.themeLabel)),
+                                            Image.asset(AssetRes.placeholder)),
                                   ),
                                 ],
                               )

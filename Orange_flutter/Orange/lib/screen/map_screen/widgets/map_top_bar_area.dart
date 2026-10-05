@@ -40,7 +40,7 @@ class MapTopBarArea extends StatelessWidget {
                 children: [
                   const RoundIconButton(),
                   const SizedBox(width: 10),
-                  Image.asset(AssetRes.themeLabel, height: 25, width: 75),
+                  Image.asset(AssetRes.themeLabel, height: 25, width: 75, fit: BoxFit.contain),
                   const SizedBox(width: 4),
                   Text(S.current.map, style: const TextStyle(color: ColorRes.black, fontSize: 15)),
                   const Spacer(),

@@ -14,7 +14,7 @@ class StartingProfileTopText extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(AssetRes.themeLabel, height: 28, width: 93),
+            Image.asset(AssetRes.themeLabel, height: 28, width: 95, fit: BoxFit.contain),
             const SizedBox(width: 5),
             Text(
               S.current.profile,

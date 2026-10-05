@@ -56,7 +56,7 @@ class PersonTopBarArea extends StatelessWidget {
                           imageUrl: '${liveStreamUser?.userImage}',
                           cacheKey: '${liveStreamUser?.userImage}',
                           errorWidget: (context, error, stackTrace) {
-                            return Image.asset(AssetRes.themeLabel,
+                            return Image.asset(AssetRes.placeholder,
                                 width: 37, height: 37);
                           },
                           height: 37,
@@ -151,7 +151,7 @@ class PersonTopBarArea extends StatelessWidget {
                       Row(
                         children: [
                           Image.asset(AssetRes.themeLabelWhite,
-                              height: 20, width: 69),
+                              height: 20, width: 69, fit: BoxFit.contain),
                           const SizedBox(width: 2),
                           Text(S.current.live,
                               style: const TextStyle(

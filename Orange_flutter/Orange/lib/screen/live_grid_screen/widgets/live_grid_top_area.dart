@@ -28,7 +28,7 @@ class LiveGridTopArea extends StatelessWidget {
           children: [
             RoundIconButton(onTap: onBackBtnTap),
             const SizedBox(width: 13),
-            Image.asset(AssetRes.themeLabel, height: 30, width: 100),
+            Image.asset(AssetRes.themeLabel, height: 30, width: 100, fit: BoxFit.contain),
             Text(
               " ${S.current.live}",
               style: const TextStyle(

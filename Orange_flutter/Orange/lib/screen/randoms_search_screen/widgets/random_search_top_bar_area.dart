@@ -43,6 +43,7 @@ class RandomSearchTopBarArea extends StatelessWidget {
                   AssetRes.themeLabel,
                   height: 28,
                   width: 94,
+                  fit: BoxFit.contain,
                 ),
                 const SizedBox(width: 4),
                 Text(

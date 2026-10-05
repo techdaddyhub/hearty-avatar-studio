@@ -50,7 +50,7 @@ class RandomStreamTopBarArea extends StatelessWidget {
                   children: [
                     Center(
                       child: Image.asset(AssetRes.themeLabelWhite,
-                          height: 20, width: 69),
+                          height: 20, width: 69, fit: BoxFit.contain),
                     ),
                     const SizedBox(width: 2),
                     Text(

@@ -58,7 +58,7 @@ class BottomLegalArea extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 20),
-        Center(child: Image.asset(AssetRes.themeLabel, height: 28, width: 93)),
+        Center(child: Image.asset(AssetRes.themeLabel, height: 30, fit: BoxFit.contain)),
         Obx(
           () => Center(
               child: Text(
