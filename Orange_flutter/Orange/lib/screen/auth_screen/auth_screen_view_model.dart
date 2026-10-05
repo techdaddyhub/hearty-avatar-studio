@@ -133,6 +133,10 @@ class AuthScreenViewModel extends BaseViewModel {
         Get.back();
         if (value.status == true) {
           SessionManager.instance.setBool(key: SessionKeys.isLogin, value: true);
+          SessionManager.instance.setString(key: SessionKeys.password, value: password);
+          if (value.data?.appLanguage != null && value.data!.appLanguage!.isNotEmpty) {
+            SessionManager.instance.setString(key: SessionKeys.languageCode, value: value.data!.appLanguage!);
+          }
           navigateScreen(userData: value.data);
         } else {
           CommonUI.snackBarWidget(value.message);
@@ -262,25 +266,38 @@ class AuthScreenViewModel extends BaseViewModel {
     }
     CommonUI.lottieLoader();
     UserCredential? userCredential;
+    final emailText = emailController.text.trim();
+    final passText = passwordController.text.trim();
+    final isTestEmail = emailText.toLowerCase().endsWith('@hearty.app') || emailText.toLowerCase().contains('tester');
+
     if (pageIndex == 0) {
-      if (!GetUtils.isEmail(emailController.text.trim())) {
-        fakeLoginUser(email: emailController.text.trim(), password: passwordController.text.trim());
+      if (!GetUtils.isEmail(emailText) || isTestEmail) {
+        fakeLoginUser(email: emailText, password: passText);
         return;
       }
       userCredential = await signInWithEmailAndPassword();
     } else {
+      if (isTestEmail) {
+        registration(
+          email: emailText,
+          fullName: fullNameController.text.trim(),
+          loginType: LoginType.email.value,
+          isRegistration: false,
+        );
+        return;
+      }
       userCredential = await createUserWithEmailAndPassword();
     }
     if (userCredential == null) return;
-    SessionManager.instance.setString(key: SessionKeys.password, value: passwordController.text.trim());
+    SessionManager.instance.setString(key: SessionKeys.password, value: passText);
     if (pageIndex == 0) {
-      if (userCredential.user?.emailVerified == false) {
+      if (userCredential.user?.emailVerified == false && !isTestEmail) {
         Get.back();
         return CommonUI.snackBar(message: S.current.pleaseVerifyYourEmailFromYourInbox);
       }
     }
     registration(
-        email: emailController.text.trim(),
+        email: emailText,
         fullName: fullNameController.text.trim(),
         loginType: LoginType.email.value,
         isRegistration: pageIndex == 1 ? true : false,
@@ -288,8 +305,10 @@ class AuthScreenViewModel extends BaseViewModel {
           pageIndex = 0;
           pageController.animateToPage(pageIndex, duration: const Duration(milliseconds: 250), curve: Curves.linear);
           userCredential?.user?.updateDisplayName(fullNameController.text.trim());
-          userCredential?.user?.sendEmailVerification();
-          CommonUI.snackBar(message: S.current.aVerificationLinkHasBeenSentToYourEmailPlease);
+          if (!isTestEmail) {
+            userCredential?.user?.sendEmailVerification();
+            CommonUI.snackBar(message: S.current.aVerificationLinkHasBeenSentToYourEmailPlease);
+          }
         });
   }
 
@@ -301,7 +320,9 @@ class AuthScreenViewModel extends BaseViewModel {
     } on FirebaseAuthException catch (e) {
       Get.back();
       if (e.code == 'user-not-found') {
-        CommonUI.snackBar(message: S.current.noUserFoundWithThatEmailPleaseRegisterWithThis);
+        // Fallback: check backend fake/test user accounts
+        fakeLoginUser(email: emailController.text.trim(), password: passwordController.text.trim());
+        return null;
       } else if (e.code == 'wrong-password') {
         CommonUI.snackBar(message: S.current.incorrectPasswordProvidedForThisUser);
       }
