@@ -62,14 +62,14 @@ class HeartyLogo extends StatelessWidget {
             },
           ),
         ),
-        if (showText && isDark) ...[
-          const SizedBox(height: 12),
+        if (showText) ...[
+          const SizedBox(height: 14),
           Text(
             'Hearty',
             style: TextStyle(
               fontSize: size * 0.26,
               fontWeight: FontWeight.bold,
-              letterSpacing: 1.2,
+              letterSpacing: 1.5,
               foreground: Paint()
                 ..shader = const LinearGradient(
                   colors: [Color(0xFFFF80AB), Color(0xFFFF5252), Color(0xFFFFD180)],

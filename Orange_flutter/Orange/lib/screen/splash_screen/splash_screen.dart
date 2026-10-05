@@ -1,7 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:orange_ui/common/hearty_logo.dart';
 import 'package:orange_ui/screen/splash_screen/splash_screen_view_model.dart';
-import 'package:orange_ui/utils/asset_res.dart';
 import 'package:stacked/stacked.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -13,10 +11,14 @@ class SplashScreen extends StatelessWidget {
       onViewModelReady: (viewModel) => viewModel.init(),
       viewModelBuilder: () => SplashScreenViewModel(),
       builder: (context, viewModel, child) {
-        return Scaffold(
+        return const Scaffold(
+          backgroundColor: Color(0xFF0F0B15),
           body: Center(
-            child: Image.asset(AssetRes.themeLabel,
-                width: Get.width / 2, height: 100),
+            child: HeartyLogo(
+              size: 140,
+              showText: true,
+              isDark: true,
+            ),
           ),
         );
       },
