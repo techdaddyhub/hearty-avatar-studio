@@ -18,6 +18,7 @@ import 'package:orange_ui/screen/create_profile_screen/view/your_profile_ready.d
 import 'package:orange_ui/screen/dashboard/dashboard_screen.dart';
 import 'package:orange_ui/service/extention/datetime_extention.dart';
 import 'package:orange_ui/service/extention/string_extention.dart';
+import 'package:orange_ui/service/language_location_service.dart';
 import 'package:orange_ui/service/session_manager.dart';
 import 'package:orange_ui/utils/app_res.dart';
 import 'package:stacked/stacked.dart';
@@ -307,6 +308,27 @@ class CreateProfileScreenViewModel extends BaseViewModel {
 
     languages =
         settingData?.language?.where((e) => e.isDeleted == 0).toList() ?? [];
+
+    if (selectedLanguages.isEmpty && languages.isNotEmpty) {
+      final countryCode = selectCountryController.selectedCountry.value?.countryCode ??
+          SessionManager.instance.getString(key: SessionKeys.detectedCountryCode) ??
+          '';
+      if (countryCode.isNotEmpty) {
+        final langInfo = LanguageLocationService.getLanguageForCountry(countryCode);
+        final match = languages.firstWhereOrNull((l) =>
+            (l.title ?? '').toLowerCase().trim() == langInfo.name.toLowerCase().trim());
+        if (match != null) {
+          selectedLanguages.add(match);
+        }
+      }
+      if (selectedLanguages.isEmpty) {
+        final en = languages.firstWhereOrNull((l) =>
+            (l.title ?? '').toLowerCase().contains('english'));
+        if (en != null) {
+          selectedLanguages.add(en);
+        }
+      }
+    }
   }
 
   void tapFinalProfile() {

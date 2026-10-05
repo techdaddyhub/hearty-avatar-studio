@@ -15,7 +15,7 @@ import 'package:orange_ui/screen/restart_app/restart_app.dart';
 import 'package:orange_ui/screen/splash_screen/splash_screen.dart';
 import 'package:orange_ui/service/ads_service.dart';
 import 'package:orange_ui/service/firebase_notification_manager.dart';
-import 'package:orange_ui/service/session_manager.dart';
+import 'package:orange_ui/service/language_location_service.dart';
 import 'package:orange_ui/service/subscription/subscription_manager.dart';
 import 'package:orange_ui/utils/color_res.dart';
 import 'package:orange_ui/utils/font_res.dart';
@@ -57,10 +57,9 @@ Future<void> main() async {
   }
 
   try {
-    LanguagesScreenViewModel.selectedLanguage =
-        SessionManager.instance.getString(key: SessionKeys.languageCode) ??
-            Platform.localeName.split('_')[0];
+    await LanguageLocationService.init();
   } catch (e) {
+    debugPrint('LanguageLocationService init error: $e');
     LanguagesScreenViewModel.selectedLanguage = 'en';
   }
 

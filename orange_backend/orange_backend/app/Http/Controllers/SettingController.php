@@ -443,7 +443,7 @@ class SettingController extends Controller
       $data['interests'] = Interest::orderByDesc('id')->get();
       $data['relationship_goals'] = RelationshipGoal::orderByDesc('id')->get();
       $data['religions'] = Religion::orderByDesc('id')->get();
-      $data['language'] = Language::orderByDesc('id')->get();
+      $data['language'] = Language::where('is_deleted', 0)->orderBy('title', 'asc')->get();
       $data['onboarding_screen'] = OnboardingScreen::get();
 
       return response()->json([

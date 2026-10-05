@@ -12,6 +12,7 @@ import 'package:orange_ui/utils/asset_res.dart';
 import 'package:orange_ui/utils/color_res.dart';
 import 'package:orange_ui/utils/const_res.dart';
 import 'package:orange_ui/utils/firebase_res.dart';
+import 'package:orange_ui/common/translatable_text_widget.dart';
 import 'package:orange_ui/utils/font_res.dart';
 import 'package:orange_ui/utils/style_res.dart';
 
@@ -133,12 +134,18 @@ class ChatArea extends StatelessWidget {
       child: Padding(
         padding: padding ??
             const EdgeInsets.symmetric(vertical: 13.0, horizontal: 11),
-        child: Text(
-          data?.msg ?? '',
-          style: TextStyle(
-              color: isMe ? ColorRes.white : ColorRes.darkGrey,
-              fontFamily: FontRes.regular),
-        ),
+        child: isMe
+            ? Text(
+                data?.msg ?? '',
+                style: const TextStyle(
+                    color: ColorRes.white, fontFamily: FontRes.regular),
+              )
+            : TranslatableTextWidget(
+                text: data?.msg ?? '',
+                style: const TextStyle(
+                    color: ColorRes.darkGrey, fontFamily: FontRes.regular),
+                isDark: false,
+              ),
       ),
     );
   }

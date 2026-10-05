@@ -160,4 +160,7 @@ class SessionKeys {
   static const String isDialogDialog = 'is_dialog_show';
   static const String eULA = 'EULA';
   static const String hasOpenedLocationSheet = 'has_opened_location_sheet';
+  static const String autoTranslateByLocation = 'auto_translate_by_location';
+  static const String detectedCountryCode = 'detected_country_code';
+  static const String detectedCountryName = 'detected_country_name';
 }

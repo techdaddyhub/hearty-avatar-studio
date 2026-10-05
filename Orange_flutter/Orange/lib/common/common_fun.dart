@@ -14,6 +14,7 @@ import 'package:orange_ui/model/social/post/add_comment.dart';
 import 'package:orange_ui/model/user/registration_user.dart';
 import 'package:orange_ui/utils/color_res.dart';
 import 'package:orange_ui/utils/const_res.dart';
+import 'package:orange_ui/service/language_location_service.dart';
 import 'package:orange_ui/utils/firebase_res.dart';
 import 'package:video_compress/video_compress.dart';
 
@@ -204,6 +205,10 @@ class CommonFun {
           await ApiProvider().updateProfile(
               latitude: '${detail.lat}', longitude: '${detail.lon}');
         }
+        LanguageLocationService.onLocationDetected(
+          countryCode: detail.countryCode,
+          countryName: detail.country,
+        );
       });
       return null;
     }
@@ -215,6 +220,13 @@ class CommonFun {
       await ApiProvider().updateProfile(
           latitude: '${position.latitude}', longitude: '${position.longitude}');
     }
+
+    ApiProvider().getIPPlaceDetail(onCompletion: (detail) {
+      LanguageLocationService.onLocationDetected(
+        countryCode: detail.countryCode,
+        countryName: detail.country,
+      );
+    });
 
     return position;
   }

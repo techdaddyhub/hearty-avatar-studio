@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:orange_ui/common/button/custom_text_button.dart';
 import 'package:orange_ui/common/fullname_with_age.dart';
 import 'package:orange_ui/common/gradient_icon.dart';
+import 'package:orange_ui/common/translatable_text_widget.dart';
 import 'package:orange_ui/generated/l10n.dart';
 import 'package:orange_ui/model/user/registration_user.dart';
 import 'package:orange_ui/screen/user_detail_screen/user_detail_screen_view_model.dart';
@@ -294,10 +295,11 @@ class UserProfileDetailSection extends StatelessWidget {
                   ),
               ],
             ),
-            Text(
-              userData?.bio ?? '',
+            TranslatableTextWidget(
+              text: userData?.bio ?? '',
               style: TextStyle(
                   color: ColorRes.white.withValues(alpha: 0.80), fontSize: 14),
+              isDark: true,
             ),
           ],
         ),
