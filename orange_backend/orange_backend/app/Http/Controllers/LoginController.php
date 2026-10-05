@@ -93,14 +93,28 @@ class LoginController extends Controller
     {
         $data = Admin::where('user_name', $request->user_name)->first();
 
-        if ($data && Crypt::decrypt($data->user_password) === $request->user_password) {
-            $request->session()->put('user_name', $data['user_name']);
-            $request->session()->put('user_type', $data['user_type']);
+        if ($data) {
+            $isMatch = false;
+            try {
+                $decrypted = Crypt::decrypt($data->user_password);
+                if ($decrypted === $request->user_password) {
+                    $isMatch = true;
+                }
+            } catch (\Exception $e) {
+                if ($data->user_password === $request->user_password) {
+                    $isMatch = true;
+                }
+            }
 
-            return response()->json([
-                'status' => true,
-                'message' => 'Login successful'
-            ]);
+            if ($isMatch) {
+                $request->session()->put('user_name', $data['user_name']);
+                $request->session()->put('user_type', $data['user_type']);
+
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Login successful'
+                ]);
+            }
         }
 
         return response()->json([
