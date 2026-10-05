@@ -138,6 +138,18 @@
                                 <span>{{ __('app.Live_History') }}</span>
                             </a>
                         </li>
+                        <li class="sideBarli adminStreamsSideA">
+                            <a href="{{ route('adminStreams') }}" class="nav-link">
+                                <i class="fas fa-broadcast-tower"></i>
+                                <span>{{ __('Live Broadcasts') }}</span>
+                            </a>
+                        </li>
+                        <li class="sideBarli adminAvatarsSideA">
+                            <a href="{{ route('adminAvatars') }}" class="nav-link">
+                                <i class="fas fa-user-astronaut"></i>
+                                <span>{{ __('Avatar Studio') }}</span>
+                            </a>
+                        </li>
                         <li class="sideBarli redeemrequestsSideA">
                             <a href="{{ route('redeemrequests') }}" class="nav-link"><i class="fas fa-university"></i><span>{{ __('app.Redeem_Requests') }}</span></a>
                         </li>
