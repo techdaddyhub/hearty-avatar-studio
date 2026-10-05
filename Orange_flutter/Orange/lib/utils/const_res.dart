@@ -1,7 +1,7 @@
 class ConstRes {
   ///------------------------ Backend urls and key ------------------------///
 
-  static const String base = '---- Base URL ----'; // Base url
+  static const String base = 'https://hearty.dmillers.org/'; // Base url
   static const String aBaseUrl = '${base}api/';
   static const String aImageBaseUrl = '${base}public/storage/';
   static const String apiKey = '123';

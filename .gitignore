@@ -65,3 +65,4 @@ streaming-gateway/yarn-error.log*
 native_engine/build/
 native_engine/*.o
 avatar-studio/
+*.zip
