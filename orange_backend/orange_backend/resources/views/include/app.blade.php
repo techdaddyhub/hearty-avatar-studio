@@ -6,12 +6,13 @@
     <meta charset="UTF-8">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-    <title>{!! Session::get('app_name') !!}</title>
+    <title>{{ Session::get('app_name', 'Hearty') }} - Admin</title>
     {{-- Jquery --}}
     <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script> -->
     <script src="{{ asset('asset/js/jquery-3.7.1.min.js') }}"></script>
     @yield('header')
-    <link rel='shortcut icon' type='image/x-icon' href="{{ asset('asset/img/favicon.png') }}" style="width: 2px !important;" />
+    <link rel="icon" type="image/png" href="{{ asset('asset/img/favicon.png') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('asset/img/favicon.ico') }}">
     <link rel="stylesheet" href="{{ asset('asset/css/app.min.css') }}">
     <link rel="stylesheet" href="{{ asset('asset/css/components.css') }}">
     <link rel="stylesheet" href="{{ asset('asset/css/custom.css') }}">
@@ -58,8 +59,14 @@
             <div class="main-sidebar sidebar-style-2">
                 <aside id="sidebar-wrapper">
                     <div class="sidebar-brand">
-                        <a href="{{ route('index') }}">
-                            <span class="logo-name"> {!! Session::get('app_name') !!} </span>
+                        <a href="{{ route('index') }}" class="d-flex align-items-center justify-content-center">
+                            <img alt="Hearty" src="{{ asset('asset/img/favicon.png') }}" class="header-logo" style="height: 36px; width: 36px; object-fit: contain; margin-right: 8px;" />
+                            <span class="logo-name" style="font-weight: 700; font-size: 1.25rem;"> {!! Session::get('app_name', 'Hearty') !!} </span>
+                        </a>
+                    </div>
+                    <div class="sidebar-brand sidebar-brand-sm">
+                        <a href="{{ route('index') }}" class="d-flex align-items-center justify-content-center">
+                            <img alt="Hearty" src="{{ asset('asset/img/favicon.png') }}" class="header-logo" style="height: 32px; width: 32px; object-fit: contain;" />
                         </a>
                     </div>
                     <ul class="sidebar-menu">

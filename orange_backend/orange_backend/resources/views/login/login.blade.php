@@ -4,8 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-    <title>{!! Session::get('app_name') !!}</title>
-    <link rel='shortcut icon' type='image/x-icon' href="{{ asset('asset/img/favicon.png') }}" style="width: 2px !important;" />
+    <title>{{ Session::get('app_name', 'Hearty') }} - Admin</title>
+    <link rel="icon" type="image/png" href="{{ asset('asset/img/favicon.png') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('asset/img/favicon.ico') }}">
 
     <link rel="stylesheet" href="{{ asset('asset/css/bootstrap.min.css') }}" type="text/css" />
     <link rel="stylesheet" href="{{ asset('asset/cdncss/iziToast.css') }}" type="text/css" />
@@ -19,7 +20,9 @@
                 <div class="col-lg-5 col-md-5 col-sm-12">
                     <div class="login-box">
                         <div class="text-center mb-4">
-                            <h3> {{ Session::get('app_name') }} </h3>
+                            <a href="{{ url('/') }}">
+                                <img src="{{ asset('asset/img/hearty_logo_dark.png') }}" alt="Hearty Logo" style="max-height: 64px; max-width: 220px; object-fit: contain;">
+                            </a>
                         </div>
                         <div class="card login-card">
                             <div class="card-header">

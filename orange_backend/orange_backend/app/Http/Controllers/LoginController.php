@@ -55,11 +55,18 @@ class LoginController extends Controller
     {
         Artisan::call('storage:link');
 
+        $setting = AppData::first();
+        if ($setting && !empty($setting->app_name)) {
+            Session::put('app_name', $setting->app_name);
+        } else {
+            Session::put('app_name', 'Hearty');
+        }
+
         if (Session::get('user_name')) {
             return redirect('index');
         }
 
-        return  view('login.login');
+        return view('login.login');
     }
 
     // function checklogin(Request $req)

@@ -175,7 +175,7 @@
       </div>
       <div class="col-lg-7 text-center text-lg-start pb-4">
         <div class="logo-lg mb-4">
-          <img src="{{ asset('asset/img/favicon.png')}}" alt="logo">
+          <img src="{{ asset('asset/img/hearty_logo_white.png')}}" alt="Hearty" style="max-height: 48px; object-fit: contain;">
         </div>
         <h1 class="display-5 fw-bold mb-3"> Download <br> the app now. </h1>
         <div class="d-flex gap-3 download-buttons flex-wrap justify-content-lg-start justify-content-center">
