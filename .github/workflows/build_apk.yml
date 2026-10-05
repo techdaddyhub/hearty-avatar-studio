@@ -49,6 +49,7 @@ jobs:
             echo "=== APK BUILT SUCCESSFULLY ==="
             ls -lh "$APK_PATH"
             sha256sum "$APK_PATH"
+            cp "$APK_PATH" "Orange_flutter/Orange/build/app/outputs/flutter-apk/hearty-v1.0.1.apk"
           else
             echo "ERROR: APK file not found at $APK_PATH"
             exit 1
@@ -58,30 +59,37 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: hearty-avatar-studio-release-apk
-          path: Orange_flutter/Orange/build/app/outputs/flutter-apk/app-release.apk
+          path: |
+            Orange_flutter/Orange/build/app/outputs/flutter-apk/hearty-v1.0.1.apk
+            Orange_flutter/Orange/build/app/outputs/flutter-apk/app-release.apk
           retention-days: 30
 
       - name: Create or Update GitHub Release
         uses: softprops/action-gh-release@v2
         continue-on-error: true
         with:
-          tag_name: v1.0.0
-          name: "Hearty Avatar Studio Android Release v1.0.0"
+          tag_name: v1.0.1
+          name: "Hearty v1.0.1 — 3D Romantic Love Heart & AI Avatar Streaming"
           body: |
-            ## Hearty AI Avatar Studio & Social Streaming Platform - Android Release
-            
-            ### Included Features:
-            - AI Avatar Live Puppeteering & Canvas Rendering
-            - Real-time Viseme & Voice Audio Volume Synchronization
-            - Agora RTC Live Video & Audio Streaming
-            - Multi-platform OBS & RTMP Gateway Controls
-            - Social Dating, Video Calling & Wallet System
+            ## Hearty v1.0.1 — AI Avatar Studio & Social Streaming Platform
+
+            ### What's New in v1.0.1:
+            - **New 3D Romantic Love Heart App Icon**: Brand-new custom 3D glossy glowing heart launcher icon with dark squircle theme across all Android densities and iOS.
+            - **Official "Hearty" Branding**: Complete naming refresh across Android (`android:label`), iOS (`CFBundleDisplayName`), and Flutter (`GetMaterialApp`).
+            - **Splash Screen Refresh**: Dynamic splash screen showcasing the 3D Romantic Love Heart brand logo.
+            - **AI Avatar Live Puppeteering**: Real-time voice viseme lip-sync and canvas rendering.
+            - **Agora RTC Video & Audio Live Streaming**: Low-latency video calling and live broadcasting.
+            - **Multi-Platform OBS & RTMP Controls**: Virtual camera integration and stream broadcasting.
+            - **Multi-Provider & Crypto Payments**: Integrated support for Cards, PayPal, and Direct Cryptocurrency.
             
             ### Default Accounts:
             - **Admin Dashboard**: `admin` / `admin@123!@#`
             - **Demo User**: `hearty_demo` / `password123`
             
             ### Direct Download:
-            Download `app-release.apk` below and install directly onto your Android device.
-          files: Orange_flutter/Orange/build/app/outputs/flutter-apk/app-release.apk
+            Download **`hearty-v1.0.1.apk`** below and install directly onto your Android device (supports Android 7.0+ / API 24+).
+          files: |
+            Orange_flutter/Orange/build/app/outputs/flutter-apk/hearty-v1.0.1.apk
+            Orange_flutter/Orange/build/app/outputs/flutter-apk/app-release.apk
+
 

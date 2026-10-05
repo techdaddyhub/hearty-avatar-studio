@@ -8,11 +8,11 @@ class HeartyLogo extends StatelessWidget {
   final bool isDark;
 
   const HeartyLogo({
-    Key? key,
+    super.key,
     this.size = 120,
     this.showText = true,
     this.isDark = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +31,7 @@ class HeartyLogo extends StatelessWidget {
             borderRadius: BorderRadius.circular(size * 0.22),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFFE91E63).withOpacity(0.25),
+                color: const Color(0xFFE91E63).withValues(alpha: 0.25),
                 blurRadius: size * 0.18,
                 spreadRadius: 2,
                 offset: const Offset(0, 6),
