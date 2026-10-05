@@ -50,20 +50,27 @@ class ApiProvider {
     map[Urls.deviceType] = Platform.isAndroid ? Urls.aOne : Urls.aTwo;
     map[Urls.loginType] = loginType.toString();
     map[Urls.identity] = email;
+    if (password != null && password.isNotEmpty) {
+      map[Urls.password] = password;
+    }
     http.Response response = await http.post(
       Uri.parse(Urls.aRegister),
       headers: {Urls.apiKeyName: ConstRes.apiKey},
       body: map,
-    );
+    ).timeout(const Duration(seconds: 15));
     UserModel user = UserModel.fromJson(jsonDecode(response.body));
 
     if (user.status == true) {
-      if (user.data?.isNotification == 1) {
-        FirebaseNotificationManager.shared.subscribeToTopic();
-        FirebaseNotificationManager.shared.subscribeToTopic(topic: AppRes.liveStreamingTopic);
-      } else {
-        FirebaseNotificationManager.shared.unsubscribeToTopic();
-        FirebaseNotificationManager.shared.unsubscribeToTopic(topic: AppRes.liveStreamingTopic);
+      try {
+        if (user.data?.isNotification == 1) {
+          FirebaseNotificationManager.shared.subscribeToTopic();
+          FirebaseNotificationManager.shared.subscribeToTopic(topic: AppRes.liveStreamingTopic);
+        } else {
+          FirebaseNotificationManager.shared.unsubscribeToTopic();
+          FirebaseNotificationManager.shared.unsubscribeToTopic(topic: AppRes.liveStreamingTopic);
+        }
+      } catch (e) {
+        log('Topic subscription error: $e');
       }
       SessionManager.instance.setUser(user.data);
     }
@@ -81,16 +88,20 @@ class ApiProvider {
       Uri.parse(Urls.aFakeUserLogin),
       headers: {Urls.apiKeyName: ConstRes.apiKey},
       body: map,
-    );
+    ).timeout(const Duration(seconds: 15));
     UserModel user = UserModel.fromJson(jsonDecode(response.body));
 
     if (user.status == true) {
-      if (user.data?.isNotification == 1) {
-        FirebaseNotificationManager.shared.subscribeToTopic();
-        FirebaseNotificationManager.shared.subscribeToTopic(topic: AppRes.liveStreamingTopic);
-      } else {
-        FirebaseNotificationManager.shared.unsubscribeToTopic();
-        FirebaseNotificationManager.shared.unsubscribeToTopic(topic: AppRes.liveStreamingTopic);
+      try {
+        if (user.data?.isNotification == 1) {
+          FirebaseNotificationManager.shared.subscribeToTopic();
+          FirebaseNotificationManager.shared.subscribeToTopic(topic: AppRes.liveStreamingTopic);
+        } else {
+          FirebaseNotificationManager.shared.unsubscribeToTopic();
+          FirebaseNotificationManager.shared.unsubscribeToTopic(topic: AppRes.liveStreamingTopic);
+        }
+      } catch (e) {
+        log('Topic subscription error: $e');
       }
       SessionManager.instance.setUser(user.data);
     }

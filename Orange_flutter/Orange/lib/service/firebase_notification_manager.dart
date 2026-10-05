@@ -78,14 +78,23 @@ class FirebaseNotificationManager {
   }
 
   void getNotificationToken(Function(String token) completion) async {
+    bool hasCompleted = false;
+    void safeComplete(String token) {
+      if (!hasCompleted) {
+        hasCompleted = true;
+        completion(token);
+      }
+    }
+
     try {
-      await FirebaseMessaging.instance.getToken().then((value) {
-        log('DeviceToken : $value');
-        completion(value ?? 'No Token');
-      });
+      final token = await FirebaseMessaging.instance
+          .getToken()
+          .timeout(const Duration(milliseconds: 2500), onTimeout: () => null);
+      log('DeviceToken : $token');
+      safeComplete(token ?? 'No Token');
     } catch (e) {
-      completion('No Token');
-      log(e.toString());
+      safeComplete('No Token');
+      log('getNotificationToken error: $e');
     }
   }
 

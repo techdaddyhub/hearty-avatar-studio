@@ -64,64 +64,82 @@ class AuthScreenViewModel extends BaseViewModel {
 
   void onGoogleTap() async {
     CommonUI.lottieLoader();
-    UserCredential? credential;
     try {
-      credential = await signInWithGoogle();
+      final googleInfo = await getGoogleUserInfo();
+      if (googleInfo == null) {
+        if (Get.isDialogOpen ?? false) Get.back();
+        return;
+      }
+      registration(
+        email: googleInfo['email'] ?? '',
+        loginType: LoginType.google.value,
+        fullName: googleInfo['fullName'] ?? 'Unknown',
+      );
     } catch (e) {
-      log(e.toString());
-      Get.back();
+      log('onGoogleTap error: $e');
+      if (Get.isDialogOpen ?? false) Get.back();
+      CommonUI.snackBar(message: 'Google Sign-In: $e');
     }
-
-    if (credential?.user == null) return;
-    registration(
-      email: credential?.user?.email ?? '',
-      loginType: LoginType.google.value,
-      fullName: credential?.user?.displayName ?? credential?.user?.email?.split('@')[0] ?? 'Unknown',
-    );
   }
 
-  Future<UserCredential> signInWithGoogle() async {
+  Future<Map<String, String>?> getGoogleUserInfo() async {
     signIn.initialize();
-    // Trigger the authentication flow
     final GoogleSignInAccount googleUser = await signIn.authenticate(scopeHint: ['email']);
-
-    // Obtain the auth details from the request
     final GoogleSignInAuthentication googleAuth = googleUser.authentication;
-
-    // Create a new credential
-    final credential = GoogleAuthProvider.credential(idToken: googleAuth.idToken);
-
-    // Once signed in, return the UserCredential
-    return await FirebaseAuth.instance.signInWithCredential(credential);
+    try {
+      if (googleAuth.idToken != null) {
+        final credential = GoogleAuthProvider.credential(idToken: googleAuth.idToken);
+        await FirebaseAuth.instance.signInWithCredential(credential);
+      }
+    } catch (e) {
+      log('FirebaseAuth Google credential note: $e');
+    }
+    return {
+      'email': googleUser.email,
+      'fullName': googleUser.displayName ?? googleUser.email.split('@')[0],
+    };
   }
 
-  void registration(
-      {bool isRegistration = false,
-      required String email,
-      required String fullName,
-      required int loginType,
-      Function(UserData? userData)? onCompletion}) {
+  void registration({
+    bool isRegistration = false,
+    required String email,
+    required String fullName,
+    required int loginType,
+    String? password,
+    Function(UserData? userData)? onCompletion,
+  }) {
     FirebaseNotificationManager.shared.getNotificationToken(
       (token) {
         ApiProvider()
-            .registration(email: email, fullName: fullName, deviceToken: token, loginType: loginType)
+            .registration(
+              email: email,
+              fullName: fullName,
+              deviceToken: token,
+              loginType: loginType,
+              password: password,
+            )
             .then((value) {
+          if (Get.isDialogOpen ?? false) Get.back();
           if (value.status == true) {
-            Get.back();
-            if (isRegistration) {
-              onCompletion?.call(value.data);
-            } else {
-              SessionManager.instance.setBool(key: SessionKeys.isLogin, value: true);
-              navigateScreen(userData: value.data);
+            SessionManager.instance.setBool(key: SessionKeys.isLogin, value: true);
+            if (password != null && password.isNotEmpty) {
+              SessionManager.instance.setString(key: SessionKeys.password, value: password);
             }
+            if (value.data?.appLanguage != null && value.data!.appLanguage!.isNotEmpty) {
+              SessionManager.instance.setString(key: SessionKeys.languageCode, value: value.data!.appLanguage!);
+            }
+            if (isRegistration && onCompletion != null) {
+              onCompletion.call(value.data);
+            }
+            navigateScreen(userData: value.data);
             notifyListeners();
-
-            ApiProvider().updateProfile(appLanguage: value.data?.appLanguage).then((value) {
-              RestartWidget.restartApp(Get.context!);
-              SessionManager.instance.setString(
-                  key: SessionKeys.languageCode, value: value.data?.appLanguage ?? Platform.localeName.split('_')[0]);
-            });
+          } else {
+            CommonUI.snackBar(message: value.message ?? "Registration failed. Please try again.");
           }
+        }).catchError((e) {
+          if (Get.isDialogOpen ?? false) Get.back();
+          CommonUI.snackBar(message: "Connection error: $e");
+          log("registration error: $e");
         });
       },
     );
@@ -130,7 +148,7 @@ class AuthScreenViewModel extends BaseViewModel {
   void fakeLoginUser({required String email, required String password}) {
     FirebaseNotificationManager.shared.getNotificationToken((token) {
       ApiProvider().fakeUserLogin(email: email, password: password, deviceToken: token).then((value) {
-        Get.back();
+        if (Get.isDialogOpen ?? false) Get.back();
         if (value.status == true) {
           SessionManager.instance.setBool(key: SessionKeys.isLogin, value: true);
           SessionManager.instance.setString(key: SessionKeys.password, value: password);
@@ -139,8 +157,12 @@ class AuthScreenViewModel extends BaseViewModel {
           }
           navigateScreen(userData: value.data);
         } else {
-          CommonUI.snackBarWidget(value.message);
+          CommonUI.snackBar(message: value.message ?? "Invalid credentials");
         }
+      }).catchError((e) {
+        if (Get.isDialogOpen ?? false) Get.back();
+        CommonUI.snackBar(message: "Connection error: $e");
+        log("fakeLoginUser error: $e");
       });
     });
   }
@@ -152,10 +174,15 @@ class AuthScreenViewModel extends BaseViewModel {
       credential = await signInWithApple();
       log('EMAIL : ${credential.user?.email} FULLNAME : ${credential.user?.displayName ?? credential.user?.email?.split('@')[0]}');
     } catch (e) {
-      log('$e');
-      Get.back();
+      log('Apple Sign In error: $e');
+      if (Get.isDialogOpen ?? false) Get.back();
+      CommonUI.snackBar(message: 'Apple Sign-In failed: $e');
+      return;
     }
-    if (credential?.user == null) return;
+    if (credential?.user == null) {
+      if (Get.isDialogOpen ?? false) Get.back();
+      return;
+    }
     registration(
       email: credential?.user?.email ?? '',
       loginType: LoginType.apple.value,
@@ -265,89 +292,64 @@ class AuthScreenViewModel extends BaseViewModel {
       }
     }
     CommonUI.lottieLoader();
-    UserCredential? userCredential;
     final emailText = emailController.text.trim();
     final passText = passwordController.text.trim();
     final isTestEmail = emailText.toLowerCase().endsWith('@hearty.app') || emailText.toLowerCase().contains('tester');
 
     if (pageIndex == 0) {
+      // Login flow
       if (!GetUtils.isEmail(emailText) || isTestEmail) {
         fakeLoginUser(email: emailText, password: passText);
         return;
       }
-      userCredential = await signInWithEmailAndPassword();
-    } else {
-      if (isTestEmail) {
-        registration(
-          email: emailText,
-          fullName: fullNameController.text.trim(),
-          loginType: LoginType.email.value,
-          isRegistration: false,
-        );
+
+      try {
+        final credential = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(email: emailText, password: passText);
+        if (credential.user != null) {
+          SessionManager.instance.setString(key: SessionKeys.password, value: passText);
+          registration(
+            email: emailText,
+            fullName: credential.user?.displayName ?? emailText.split('@')[0],
+            loginType: LoginType.email.value,
+            password: passText,
+          );
+          return;
+        }
+      } on FirebaseAuthException catch (e) {
+        log('Firebase login exception: ${e.code} - ${e.message}');
+        if (e.code == 'wrong-password') {
+          if (Get.isDialogOpen ?? false) Get.back();
+          CommonUI.snackBar(message: S.current.incorrectPasswordProvidedForThisUser);
+          return;
+        }
+        // If user not in Firebase (e.g. backend / fake / seeded user), fallback to backend
+        fakeLoginUser(email: emailText, password: passText);
+        return;
+      } catch (e) {
+        log('General login exception: $e');
+        fakeLoginUser(email: emailText, password: passText);
         return;
       }
-      userCredential = await createUserWithEmailAndPassword();
-    }
-    if (userCredential == null) return;
-    SessionManager.instance.setString(key: SessionKeys.password, value: passText);
-    if (pageIndex == 0) {
-      if (userCredential.user?.emailVerified == false && !isTestEmail) {
-        Get.back();
-        return CommonUI.snackBar(message: S.current.pleaseVerifyYourEmailFromYourInbox);
+    } else {
+      // Registration flow: create in Firebase (if supported) and register in backend
+      try {
+        final credential = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(email: emailText, password: passText);
+        credential.user?.updateDisplayName(fullNameController.text.trim());
+        credential.user?.sendEmailVerification().catchError((_) {});
+      } catch (e) {
+        log('Firebase registration note: $e');
       }
-    }
-    registration(
+
+      SessionManager.instance.setString(key: SessionKeys.password, value: passText);
+      registration(
         email: emailText,
         fullName: fullNameController.text.trim(),
         loginType: LoginType.email.value,
-        isRegistration: pageIndex == 1 ? true : false,
-        onCompletion: (userData) {
-          pageIndex = 0;
-          pageController.animateToPage(pageIndex, duration: const Duration(milliseconds: 250), curve: Curves.linear);
-          userCredential?.user?.updateDisplayName(fullNameController.text.trim());
-          if (!isTestEmail) {
-            userCredential?.user?.sendEmailVerification();
-            CommonUI.snackBar(message: S.current.aVerificationLinkHasBeenSentToYourEmailPlease);
-          }
-        });
-  }
-
-  Future<UserCredential?> signInWithEmailAndPassword() async {
-    try {
-      final credential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: emailController.text.trim(), password: passwordController.text.trim());
-      return credential;
-    } on FirebaseAuthException catch (e) {
-      Get.back();
-      if (e.code == 'user-not-found') {
-        // Fallback: check backend fake/test user accounts
-        fakeLoginUser(email: emailController.text.trim(), password: passwordController.text.trim());
-        return null;
-      } else if (e.code == 'wrong-password') {
-        CommonUI.snackBar(message: S.current.incorrectPasswordProvidedForThisUser);
-      }
-      return null;
-    } catch (e) {
-      return null;
-    }
-  }
-
-  Future<UserCredential?> createUserWithEmailAndPassword() async {
-    try {
-      final credential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: emailController.text.trim(), password: passwordController.text.trim());
-      return credential;
-    } on FirebaseAuthException catch (e) {
-      Get.back();
-      log(e.message.toString());
-      if (e.code == 'weak-password') {
-        CommonUI.snackBar(message: S.current.thePasswordProvidedIsTooWeak);
-      } else if (e.code == 'email-already-in-use') {
-        CommonUI.snackBar(message: S.current.theAccountAlreadyExistsForThatEmail);
-      } else {
-        CommonUI.snackBar(message: e.message.toString());
-      }
-      return null;
+        password: passText,
+        isRegistration: false,
+      );
     }
   }
 
@@ -362,12 +364,15 @@ class AuthScreenViewModel extends BaseViewModel {
     CommonUI.lottieLoader();
     try {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: emailController.text.trim());
-      Get.back();
+      if (Get.isDialogOpen ?? false) Get.back();
       Get.back();
       CommonUI.snackBar(message: S.current.aResetPasswordLinkHasBeenSentToYourEmail);
     } on FirebaseAuthException catch (e) {
-      Get.back();
+      if (Get.isDialogOpen ?? false) Get.back();
       CommonUI.snackBar(message: e.message ?? "An error occurred. Please try again.");
+    } catch (e) {
+      if (Get.isDialogOpen ?? false) Get.back();
+      CommonUI.snackBar(message: e.toString());
     }
   }
 }
