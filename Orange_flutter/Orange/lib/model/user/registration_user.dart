@@ -14,6 +14,27 @@ import 'package:orange_ui/utils/asset_res.dart';
 import 'package:orange_ui/utils/color_res.dart';
 import 'package:orange_ui/utils/const_res.dart';
 
+int? _toInt(dynamic value) {
+  if (value == null) return null;
+  if (value is int) return value;
+  if (value is num) return value.toInt();
+  if (value is String) return int.tryParse(value);
+  return null;
+}
+
+String? _toString(dynamic value) {
+  if (value == null) return null;
+  return value.toString();
+}
+
+bool? _toBool(dynamic value) {
+  if (value == null) return null;
+  if (value is bool) return value;
+  if (value == 1 || value == '1' || value == 'true') return true;
+  if (value == 0 || value == '0' || value == 'false') return false;
+  return null;
+}
+
 class UserModel {
   UserModel({
     bool? status,
@@ -26,8 +47,9 @@ class UserModel {
   }
 
   UserModel.fromJson(dynamic json) {
-    _status = json['status'];
-    _message = json['message'];
+    if (json == null) return;
+    _status = _toBool(json['status']);
+    _message = _toString(json['message']);
     _data = json['data'] != null ? UserData.fromJson(json['data']) : null;
   }
 
@@ -125,80 +147,85 @@ class UserData {
   });
 
   UserData.fromJson(dynamic json) {
-    id = json['id'];
-    isBlock = json['is_block'];
+    if (json == null) return;
+    id = _toInt(json['id']);
+    isBlock = _toInt(json['is_block']);
     gender = json['gender'] == null || json['gender'] == 'null'
         ? GenderType.male
         : GenderType.fromString(json['gender']);
-    dob = json['dob'];
-    savedProfile = json['savedprofile'];
-    likedProfile = json['likedprofile'];
-    interests = json['interests'];
-    identity = json['identity'];
-    username = json['username'];
-    fullname = json['fullname'];
-    instagram = json['instagram'];
-    youtube = json['youtube'];
-    facebook = json['facebook'];
-    bio = json['bio'];
-    about = json['about'];
-    latitude = json['lattitude'];
-    longitude = json['longitude'];
-    loginType = json['login_type'];
-    deviceToken = json['device_token'];
-    blockedUsers = json['blocked_users'];
-    wallet = json['wallet'];
-    totalCollected = json['total_collected'];
-    totalStreams = json['total_streams'];
-    deviceType = json['device_type'];
-    isNotification = json['is_notification'];
-    isVerified = json['is_verified'];
-    showOnMap = json['show_on_map'];
-    anonymous = json['anonymous'];
-    isVideoCall = json['is_video_call'];
-    canGoLive = json['can_go_live'];
-    isLiveNow = json['is_live_now'];
-    isFake = json['is_fake'];
-    password = json['password'];
-    following = json['following'];
-    followers = json['followers'];
+    dob = _toString(json['dob']);
+    savedProfile = _toString(json['savedprofile']);
+    likedProfile = _toString(json['likedprofile']);
+    interests = _toString(json['interests']);
+    identity = _toString(json['identity']);
+    username = _toString(json['username']);
+    fullname = _toString(json['fullname']);
+    instagram = _toString(json['instagram']);
+    youtube = _toString(json['youtube']);
+    facebook = _toString(json['facebook']);
+    bio = _toString(json['bio']);
+    about = _toString(json['about']);
+    latitude = _toString(json['lattitude']);
+    longitude = _toString(json['longitude']);
+    loginType = _toInt(json['login_type']);
+    deviceToken = _toString(json['device_token']);
+    blockedUsers = _toString(json['blocked_users']);
+    wallet = _toInt(json['wallet']);
+    totalCollected = _toInt(json['total_collected']);
+    totalStreams = _toInt(json['total_streams']);
+    deviceType = _toInt(json['device_type']);
+    isNotification = _toInt(json['is_notification']);
+    isVerified = _toInt(json['is_verified']);
+    showOnMap = _toInt(json['show_on_map']);
+    anonymous = _toInt(json['anonymous']);
+    isVideoCall = _toInt(json['is_video_call']);
+    canGoLive = _toInt(json['can_go_live']);
+    isLiveNow = _toInt(json['is_live_now']);
+    isFake = _toInt(json['is_fake']);
+    password = _toString(json['password']);
+    following = _toInt(json['following']);
+    followers = _toInt(json['followers']);
     genderPreferred =
         json['gender_preferred'] == null || json['gender_preferred'] == 'null'
             ? GenderType.male
             : GenderType.fromString(json['gender_preferred']);
-    agePreferredMin = json['age_preferred_min'];
-    agePreferredMax = json['age_preferred_max'];
-    distancePreference = json['distance_preference'];
-    relationshipGoalId = json['relationship_goal_id'];
-    religionKey = json['religion_key'];
-    languageKeys = json['language_keys'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-    isLiked = json['is_like'];
-    followingStatus = json['followingStatus'];
-    matchedInterests = json['matched_interests'];
-    matchedLanguages = json['matched_languages'];
-    matchedRelationshipGoalId = json['matched_relationship_goal_id'];
-    matchedReligion = json['matched_religion'];
-    matchScore = json['match_score'];
-    hiddenUserIds = json['hidden_user_ids'];
-    country = json['country'];
-    state = json['state'];
-    city = json['city'];
-    appLanguage = json['app_language'];
-    if (json['images'] != null) {
+    agePreferredMin = _toInt(json['age_preferred_min']);
+    agePreferredMax = _toInt(json['age_preferred_max']);
+    distancePreference = _toInt(json['distance_preference']);
+    relationshipGoalId = _toInt(json['relationship_goal_id']);
+    religionKey = _toString(json['religion_key']);
+    languageKeys = _toString(json['language_keys']);
+    createdAt = _toString(json['created_at']);
+    updatedAt = _toString(json['updated_at']);
+    isLiked = _toBool(json['is_like']);
+    followingStatus = _toInt(json['followingStatus']);
+    matchedInterests = _toString(json['matched_interests']);
+    matchedLanguages = _toString(json['matched_languages']);
+    matchedRelationshipGoalId = _toInt(json['matched_relationship_goal_id']);
+    matchedReligion = _toString(json['matched_religion']);
+    matchScore = _toInt(json['match_score']);
+    hiddenUserIds = _toString(json['hidden_user_ids']);
+    country = _toString(json['country']);
+    state = _toString(json['state']);
+    city = _toString(json['city']);
+    appLanguage = _toString(json['app_language']);
+    if (json['images'] != null && json['images'] is List) {
       images = [];
-      json['images'].forEach((v) {
-        images?.add(Images.fromJson(v));
-      });
+      for (var v in json['images']) {
+        if (v != null) {
+          images?.add(Images.fromJson(v));
+        }
+      }
     }
-    if (json['stories'] != null) {
+    if (json['stories'] != null && json['stories'] is List) {
       story = [];
-      json['stories'].forEach((v) {
-        var s = Story.fromJson(v);
-        s.user = this;
-        story?.add(s);
-      });
+      for (var v in json['stories']) {
+        if (v != null) {
+          var s = Story.fromJson(v);
+          s.user = this;
+          story?.add(s);
+        }
+      }
     }
   }
 
@@ -513,9 +540,10 @@ class Images {
   }
 
   Images.fromJson(dynamic json) {
-    _id = json['id'];
-    _userId = json['user_id'];
-    _image = json['image'];
+    if (json == null) return;
+    _id = _toInt(json['id']);
+    _userId = _toInt(json['user_id']);
+    _image = _toString(json['image']);
   }
 
   int? _id;
@@ -572,15 +600,16 @@ class Story {
   }
 
   Story.fromJson(dynamic json) {
-    _id = json['id'];
-    _userId = json['user_id'];
-    _type = json['type'];
-    _duration = json['duration'];
-    _content = json['content'];
-    _viewByUserIds = json['view_by_user_ids'];
-    _createdAt = json['created_at'];
-    _updatedAt = json['updated_at'];
-    _storyView = json['storyView'];
+    if (json == null) return;
+    _id = _toInt(json['id']);
+    _userId = _toInt(json['user_id']);
+    _type = _toInt(json['type']);
+    _duration = _toInt(json['duration']);
+    _content = _toString(json['content']);
+    _viewByUserIds = _toString(json['view_by_user_ids']);
+    _createdAt = _toString(json['created_at']);
+    _updatedAt = _toString(json['updated_at']);
+    _storyView = _toBool(json['storyView']);
   }
 
   int? _id;

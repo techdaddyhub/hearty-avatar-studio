@@ -428,9 +428,22 @@ enum GenderType {
     }
   }
 
-  static GenderType fromString(int? value) {
-    return GenderType.values.firstWhereOrNull((e) => e.value == value) ??
-        GenderType.male;
+  static GenderType fromString(dynamic value) {
+    if (value == null) return GenderType.male;
+    int? intVal;
+    if (value is int) {
+      intVal = value;
+    } else if (value is String) {
+      intVal = int.tryParse(value);
+    }
+    if (intVal != null) {
+      return GenderType.values.firstWhereOrNull((e) => e.value == intVal) ??
+          GenderType.male;
+    }
+    final str = value.toString().toLowerCase();
+    if (str.contains('female') || str == '2') return GenderType.female;
+    if (str.contains('other') || str == '3') return GenderType.other;
+    return GenderType.male;
   }
 }
 

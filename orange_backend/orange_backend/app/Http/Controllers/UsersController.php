@@ -1395,6 +1395,13 @@ class UsersController extends Controller
 
     function addUserDetails(Request $req)
     {
+        if ($req->has('password')) {
+            $data = Users::where('identity', $req->identity)->where('password', $req->password)->first();
+            if ($data == null) {
+                return json_encode(['status' => false, 'message' => "Incorrect Identity and Password combination"]);
+            }
+        }
+
         $appData = AppData::first();
         $data = Users::where('identity', $req->identity)->first();
 
@@ -1405,11 +1412,8 @@ class UsersController extends Controller
             $user->device_token = $req->device_token;
             $user->device_type = $req->device_type;
             $user->login_type = $req->login_type;
-            if ($req->has('password') && !empty($req->password)) {
-                $user->password = $req->password;
-            }
-            $user->wallet = $appData ? $appData->new_user_free_coins : 0;
-            $user->total_collected = $appData ? $appData->new_user_free_coins : 0;
+            $user->wallet = $appData->new_user_free_coins;
+            $user->total_collected = $appData->new_user_free_coins;
             $user->username = $this->generateUniqueUsername();
 
             $user->save();
@@ -1422,21 +1426,11 @@ class UsersController extends Controller
                 'data' => $data
             ]);
         } else {
-            if ($req->has('password') && !empty($req->password) && !empty($data->password)) {
-                if ($data->password !== $req->password) {
-                    return response()->json(['status' => false, 'message' => "Incorrect Identity and Password combination"]);
-                }
-            }
-
-            $updateData = [
+            Users::where('identity', $req->identity)->update([
                 'device_token' => $req->device_token,
                 'device_type' => $req->device_type,
                 'login_type' => $req->login_type,
-            ];
-            if ($req->has('password') && !empty($req->password)) {
-                $updateData['password'] = $req->password;
-            }
-            Users::where('identity', $req->identity)->update($updateData);
+            ]);
 
             $data = Users::with('images')->where('id', $data['id'])->first();
 
@@ -2504,7 +2498,9 @@ class UsersController extends Controller
 
         if ($request->filled('device_token')) {
             $user->device_token = $request->device_token;
-            $user->device_type  = $request->device_type ?? $user->device_type; // keep old if not sent
+            if ($request->filled('device_type')) {
+                $user->device_type = (int) $request->device_type;
+            }
             $user->save();
         }
 
