@@ -11,8 +11,14 @@ class SelectCountrySheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (controller.allCountries.isEmpty && !controller.isLoading.value) {
+      controller.loadData();
+    } else if (controller.filteredCountries.isEmpty && controller.allCountries.isNotEmpty) {
+      controller.filteredCountries.assignAll(controller.allCountries);
+    }
     return BaseSelectSheet<Country>(
       title: "Country",
+      isLoading: controller.isLoading,
       items: controller.filteredCountries,
       selectedItem: controller.selectedCountry,
       getDisplayText: (country) => country.countryName,

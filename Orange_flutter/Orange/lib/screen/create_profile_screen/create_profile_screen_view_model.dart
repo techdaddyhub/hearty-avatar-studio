@@ -7,6 +7,7 @@ import 'package:orange_ui/common/common_ui.dart';
 import 'package:orange_ui/generated/l10n.dart';
 import 'package:orange_ui/model/setting_model.dart';
 import 'package:orange_ui/model/user/registration_user.dart';
+import 'package:orange_ui/screen/countries/countries_model.dart';
 import 'package:orange_ui/screen/countries/select_country_controller.dart';
 import 'package:orange_ui/screen/create_profile_screen/view/add_photos.dart';
 import 'package:orange_ui/screen/create_profile_screen/view/choose_religion.dart';
@@ -63,6 +64,7 @@ class CreateProfileScreenViewModel extends BaseViewModel {
     initImage();
 
     _initializeUserPreferences();
+    _initializeLocation(userData);
     notifyListeners();
   }
 
@@ -220,10 +222,18 @@ class CreateProfileScreenViewModel extends BaseViewModel {
       return CommonUI.snackBar(message: S.current.pleaseSelectCountry);
     }
     if (selectCountryController.selectedState.value == null) {
-      return CommonUI.snackBar(message: S.current.pleaseSelectState);
+      if (selectCountryController.selectedStatesFromCountry.isNotEmpty) {
+        selectCountryController.selectState(state: selectCountryController.selectedStatesFromCountry.first);
+      } else {
+        return CommonUI.snackBar(message: S.current.pleaseSelectState);
+      }
     }
     if (selectCountryController.selectedCity.value == null) {
-      return CommonUI.snackBar(message: S.current.pleaseSelectCity);
+      if (selectCountryController.selectedCitiesFromState.isNotEmpty) {
+        selectCountryController.selectCity(city: selectCountryController.selectedCitiesFromState.first);
+      } else {
+        return CommonUI.snackBar(message: S.current.pleaseSelectCity);
+      }
     }
 
     if (settingData?.appdata?.isDating == 1) {
@@ -331,6 +341,57 @@ class CreateProfileScreenViewModel extends BaseViewModel {
     }
   }
 
+  void _initializeLocation(UserData userData) async {
+    if (selectCountryController.allCountries.isEmpty) {
+      await selectCountryController.loadData();
+    }
+
+    if (selectCountryController.selectedCountry.value == null) {
+      Country? matchedCountry;
+
+      if (userData.country != null && userData.country!.trim().isNotEmpty) {
+        final query = userData.country!.trim().toLowerCase();
+        matchedCountry = selectCountryController.allCountries.firstWhereOrNull(
+          (c) => c.countryName.toLowerCase() == query || c.countryCode.toLowerCase() == query,
+        );
+      }
+
+      if (matchedCountry == null) {
+        final detectedCode = SessionManager.instance.getString(key: SessionKeys.detectedCountryCode);
+        if (detectedCode != null && detectedCode.isNotEmpty) {
+          matchedCountry = selectCountryController.allCountries.firstWhereOrNull(
+            (c) => c.countryCode.toLowerCase() == detectedCode.trim().toLowerCase(),
+          );
+        }
+      }
+
+      if (matchedCountry != null) {
+        selectCountryController.selectCountry(country: matchedCountry);
+
+        if (userData.state != null && userData.state!.trim().isNotEmpty) {
+          final queryState = userData.state!.trim().toLowerCase();
+          final matchedState = selectCountryController.selectedStatesFromCountry.firstWhereOrNull(
+            (s) => s.name.toLowerCase() == queryState || s.stateCode.toLowerCase() == queryState,
+          );
+          if (matchedState != null) {
+            selectCountryController.selectState(state: matchedState);
+
+            if (userData.city != null && userData.city!.trim().isNotEmpty) {
+              final queryCity = userData.city!.trim().toLowerCase();
+              final matchedCity = selectCountryController.selectedCitiesFromState.firstWhereOrNull(
+                (c) => c.name.toLowerCase() == queryCity,
+              );
+              if (matchedCity != null) {
+                selectCountryController.selectCity(city: matchedCity);
+              }
+            }
+          }
+        }
+        notifyListeners();
+      }
+    }
+  }
+
   void tapFinalProfile() {
     bool isDating = settingData?.appdata?.isDating == 1;
     if (fullnameController.text.trim().isEmpty) {
@@ -344,10 +405,18 @@ class CreateProfileScreenViewModel extends BaseViewModel {
       return CommonUI.snackBar(message: S.current.pleaseSelectCountry);
     }
     if (selectCountryController.selectedState.value == null) {
-      return CommonUI.snackBar(message: S.current.pleaseSelectState);
+      if (selectCountryController.selectedStatesFromCountry.isNotEmpty) {
+        selectCountryController.selectState(state: selectCountryController.selectedStatesFromCountry.first);
+      } else {
+        return CommonUI.snackBar(message: S.current.pleaseSelectState);
+      }
     }
     if (selectCountryController.selectedCity.value == null) {
-      return CommonUI.snackBar(message: S.current.pleaseSelectCity);
+      if (selectCountryController.selectedCitiesFromState.isNotEmpty) {
+        selectCountryController.selectCity(city: selectCountryController.selectedCitiesFromState.first);
+      } else {
+        return CommonUI.snackBar(message: S.current.pleaseSelectCity);
+      }
     }
 
     if (selectedInterest.isEmpty) {

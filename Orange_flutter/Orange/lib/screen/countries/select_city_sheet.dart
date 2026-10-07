@@ -12,8 +12,12 @@ class SelectCitySheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (controller.filteredCities.isEmpty && controller.selectedCitiesFromState.isNotEmpty) {
+      controller.filteredCities.assignAll(controller.selectedCitiesFromState);
+    }
     return BaseSelectSheet<City>(
       title: S.of(context).city,
+      isLoading: controller.isLoading,
       items: controller.filteredCities,
       selectedItem: controller.selectedCity,
       getDisplayText: (city) => city.name,

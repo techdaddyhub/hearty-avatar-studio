@@ -18,6 +18,7 @@ class BaseSelectSheet<T> extends StatelessWidget {
   final String Function(T)? getSecondaryText;
   final Function(T) onSelect;
   final Function(String) onSearch;
+  final RxBool? isLoading;
 
   const BaseSelectSheet({
     super.key,
@@ -28,6 +29,7 @@ class BaseSelectSheet<T> extends StatelessWidget {
     this.getSecondaryText,
     required this.onSelect,
     required this.onSearch,
+    this.isLoading,
   });
 
   @override
@@ -47,6 +49,25 @@ class BaseSelectSheet<T> extends StatelessWidget {
                   placeholder: S.of(context).searchHere, onChanged: onSearch),
               Expanded(
                 child: Obx(() {
+                  if (isLoading?.value == true && items.isEmpty) {
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: ColorRes.themeColor,
+                      ),
+                    );
+                  }
+                  if (items.isEmpty) {
+                    return Center(
+                      child: Text(
+                        S.of(context).noDataFound,
+                        style: const TextStyle(
+                          fontFamily: FontRes.regular,
+                          fontSize: 16,
+                          color: ColorRes.dimGrey2,
+                        ),
+                      ),
+                    );
+                  }
                   return ListView.builder(
                     itemCount: items.length,
                     padding: const EdgeInsets.only(top: 5),
