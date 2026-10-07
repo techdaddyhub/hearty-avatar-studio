@@ -32,3 +32,4 @@ class ContactRequest extends Model
         return $this->belongsTo(Users::class, 'recipient_id', 'id')->with('images');
     }
 }
+

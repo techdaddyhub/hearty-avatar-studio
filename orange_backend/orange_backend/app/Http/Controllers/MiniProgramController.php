@@ -62,3 +62,4 @@ class MiniProgramController extends Controller
         ]);
     }
 }
+

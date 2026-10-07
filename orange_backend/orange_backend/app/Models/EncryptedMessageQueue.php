@@ -30,3 +30,4 @@ class EncryptedMessageQueue extends Model
         'device_id' => 'integer',
     ];
 }
+

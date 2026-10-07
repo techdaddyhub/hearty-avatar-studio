@@ -25,3 +25,4 @@ class UserPreKey extends Model
         return $this->belongsTo(Users::class, 'user_id', 'id');
     }
 }
+

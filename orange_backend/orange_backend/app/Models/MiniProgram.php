@@ -26,3 +26,4 @@ class MiniProgram extends Model
         'is_active' => 'integer',
     ];
 }
+

@@ -35,3 +35,4 @@ class Moment extends Model
         return $this->hasMany(MomentKeyEnvelope::class, 'moment_id', 'id');
     }
 }
+

@@ -276,3 +276,4 @@ class ContactsScreenViewModel extends BaseViewModel {
     }
   }
 }
+

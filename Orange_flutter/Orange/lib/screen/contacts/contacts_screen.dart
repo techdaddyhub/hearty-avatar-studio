@@ -239,3 +239,4 @@ class ContactsScreen extends StatelessWidget {
     );
   }
 }
+

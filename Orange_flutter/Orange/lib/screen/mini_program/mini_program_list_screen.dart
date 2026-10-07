@@ -211,3 +211,4 @@ class _MiniProgramListScreenState extends State<MiniProgramListScreen> {
     );
   }
 }
+

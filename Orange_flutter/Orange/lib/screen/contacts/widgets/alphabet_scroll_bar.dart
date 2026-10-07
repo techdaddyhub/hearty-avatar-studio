@@ -46,3 +46,4 @@ class AlphabetScrollBar extends StatelessWidget {
     );
   }
 }
+

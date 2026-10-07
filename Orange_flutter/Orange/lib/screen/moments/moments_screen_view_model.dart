@@ -178,3 +178,4 @@ class MomentsScreenViewModel extends BaseViewModel {
     notifyListeners();
   }
 }
+

@@ -27,3 +27,4 @@ class MomentKeyEnvelope extends Model
         return $this->belongsTo(Moment::class, 'moment_id', 'id');
     }
 }
+

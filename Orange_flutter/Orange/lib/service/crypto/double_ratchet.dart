@@ -297,3 +297,4 @@ class EncryptedEnvelope {
     messageType: json['message_type'] as String? ?? 'text',
   );
 }
+

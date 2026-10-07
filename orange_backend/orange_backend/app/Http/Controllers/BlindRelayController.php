@@ -149,3 +149,4 @@ class BlindRelayController extends Controller
         ]);
     }
 }
+
