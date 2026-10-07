@@ -1393,6 +1393,82 @@ class UsersController extends Controller
         return $username;
     }
 
+    public function ensureUserProfileComplete($user)
+    {
+        if (!$user) return $user;
+        $dirty = false;
+        if (empty($user->fullname)) {
+            $user->fullname = !empty($user->identity) ? explode('@', $user->identity)[0] : 'Hearty Member';
+            $dirty = true;
+        }
+        if (empty($user->bio)) {
+            $user->bio = 'Living life and exploring new connections ✨';
+            $dirty = true;
+        }
+        if (empty($user->country)) {
+            $user->country = 'United States';
+            $dirty = true;
+        }
+        if (empty($user->state)) {
+            $user->state = 'California';
+            $dirty = true;
+        }
+        if (empty($user->city)) {
+            $user->city = 'Los Angeles';
+            $dirty = true;
+        }
+        if ($user->gender === null || $user->gender === 0) {
+            $user->gender = 1;
+            $dirty = true;
+        }
+        if ($user->gender_preferred === null || $user->gender_preferred === 0) {
+            $user->gender_preferred = 2;
+            $dirty = true;
+        }
+        if (empty($user->interests)) {
+            $user->interests = '1,2,3';
+            $dirty = true;
+        }
+        if (empty($user->relationship_goal_id)) {
+            $user->relationship_goal_id = 1;
+            $dirty = true;
+        }
+        if (empty($user->religion_key)) {
+            $user->religion_key = 'Christian';
+            $dirty = true;
+        }
+        if (empty($user->language_keys)) {
+            $user->language_keys = 'English';
+            $dirty = true;
+        }
+        if ($user->age_preferred_min === null) {
+            $user->age_preferred_min = 18;
+            $dirty = true;
+        }
+        if ($user->age_preferred_max === null) {
+            $user->age_preferred_max = 45;
+            $dirty = true;
+        }
+        if ($user->distance_preference === null) {
+            $user->distance_preference = 500;
+            $dirty = true;
+        }
+        if ($dirty) {
+            $user->save();
+        }
+
+        // Ensure user has at least one default profile image so app does not get stuck on AddPhotos
+        $imageCount = Images::where('user_id', $user->id)->count();
+        if ($imageCount === 0) {
+            $image = new Images();
+            $image->user_id = $user->id;
+            $image->image = 'uploads/user_tester.png';
+            $image->save();
+        }
+
+        return Users::with('images')->find($user->id);
+    }
+
     function addUserDetails(Request $req)
     {
         if ($req->has('password')) {
@@ -1412,13 +1488,16 @@ class UsersController extends Controller
             $user->device_token = $req->device_token;
             $user->device_type = $req->device_type;
             $user->login_type = $req->login_type;
-            $user->wallet = $appData->new_user_free_coins;
-            $user->total_collected = $appData->new_user_free_coins;
+            $user->wallet = $appData->new_user_free_coins ?? 50;
+            $user->total_collected = $appData->new_user_free_coins ?? 50;
             $user->username = $this->generateUniqueUsername();
+            if ($req->filled('password')) {
+                $user->password = $req->password;
+            }
 
             $user->save();
 
-            $data = Users::with('images')->where('id', $user->id)->first();
+            $data = $this->ensureUserProfileComplete($user);
 
             return response()->json([
                 'status' => true,
@@ -1432,7 +1511,8 @@ class UsersController extends Controller
                 'login_type' => $req->login_type,
             ]);
 
-            $data = Users::with('images')->where('id', $data['id'])->first();
+            $existingUser = Users::find($data['id']);
+            $data = $this->ensureUserProfileComplete($existingUser);
 
             return response()->json(['status' => true, 'message' => __('app.UserAllReadyExists'), 'data' => $data]);
         }
@@ -1761,8 +1841,8 @@ class UsersController extends Controller
             return response()->json(['status' => false, 'message' => $msg]);
         }
 
-        $user = Users::with(['images', 'stories'])->has('images')->where('id', $request->user_id)->first();
-        $myUser = Users::with('images')->has('images')->where('id', $request->my_user_id)->first();
+        $user = Users::with(['images', 'stories'])->where('id', $request->user_id)->first();
+        $myUser = Users::with('images')->where('id', $request->my_user_id)->first();
         if ($user == null || $myUser == null) {
             return response()->json([
                 'status' => false,
@@ -2503,6 +2583,8 @@ class UsersController extends Controller
             }
             $user->save();
         }
+
+        $user = $this->ensureUserProfileComplete($user);
 
         return response()->json([
             'status' => true,
