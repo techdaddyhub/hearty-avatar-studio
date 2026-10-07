@@ -16,6 +16,8 @@ import 'package:orange_ui/screen/splash_screen/splash_screen.dart';
 import 'package:orange_ui/service/ads_service.dart';
 import 'package:orange_ui/service/firebase_notification_manager.dart';
 import 'package:orange_ui/service/language_location_service.dart';
+import 'package:orange_ui/service/crypto/e2ee_manager.dart';
+import 'package:orange_ui/service/gateway/realtime_relay_client.dart';
 import 'package:orange_ui/service/subscription/subscription_manager.dart';
 import 'package:orange_ui/utils/color_res.dart';
 import 'package:orange_ui/utils/font_res.dart';
@@ -52,8 +54,16 @@ Future<void> main() async {
 
   try {
     await GetStorage.init('Orange');
+    await GetStorage.init('HeartyE2EEVault');
   } catch (e) {
     debugPrint('GetStorage init error: $e');
+  }
+
+  try {
+    await E2EEManager.shared.initialize();
+    RealtimeRelayClient.shared.connect();
+  } catch (e) {
+    debugPrint('E2EE initialization error: $e');
   }
 
   try {

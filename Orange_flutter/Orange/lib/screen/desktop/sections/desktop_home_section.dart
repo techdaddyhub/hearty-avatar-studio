@@ -91,7 +91,7 @@ class DesktopHomeSection extends StatelessWidget {
                             label: const Text('Broadcast Setup'),
                             style: OutlinedButton.styleFrom(
                               foregroundColor: Colors.white,
-                              side: const BorderBorderSide(color: Colors.white24),
+                              side: const BorderSide(color: Colors.white24),
                               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                             ),

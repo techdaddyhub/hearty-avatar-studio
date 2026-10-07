@@ -4,6 +4,8 @@ import 'package:orange_ui/common/dashboard_top_bar.dart';
 import 'package:orange_ui/generated/l10n.dart';
 import 'package:orange_ui/screen/dashboard/dashboard_screen_view_model.dart';
 import 'package:orange_ui/screen/dashboard/widget/custom_banner_ads.dart';
+import 'package:orange_ui/screen/contacts/contacts_screen.dart';
+import 'package:orange_ui/screen/discover_screen/discover_screen.dart';
 import 'package:orange_ui/screen/explore_screen/explore_screen.dart';
 import 'package:orange_ui/screen/feed_screen/feed_screen.dart';
 import 'package:orange_ui/screen/find_match_profile/find_match_profile.dart';
@@ -61,48 +63,17 @@ class DashboardScreen extends StatelessWidget {
       {required bool isSocialMedia,
       required bool isDating,
       required int index}) {
-    if (!isDating && !isSocialMedia) {
-      switch (index) {
-        case 0:
-          return const MessageScreen();
-        default:
-          return const ProfileScreen();
-      }
-    } else if (isDating && isSocialMedia) {
-      switch (index) {
-        case 0:
-          return const ExploreScreen();
-        case 1:
-          return const FindMatchProfile();
-        case 2:
-          return const FeedScreen();
-        case 3:
-          return const MessageScreen();
-        default:
-          return const ProfileScreen();
-      }
-    } else if (!isDating && isSocialMedia) {
-      // Social media only
-      switch (index) {
-        case 0:
-          return const FeedScreen();
-        case 1:
-          return const MessageScreen();
-        default:
-          return const ProfileScreen();
-      }
-    } else {
-      // Dating only
-      switch (index) {
-        case 0:
-          return const ExploreScreen();
-        case 1:
-          return const FindMatchProfile();
-        case 2:
-          return const MessageScreen();
-        default:
-          return const ProfileScreen();
-      }
+    switch (index) {
+      case 0:
+        return const MessageScreen();
+      case 1:
+        return const ContactsScreen();
+      case 2:
+        return const DiscoverScreen();
+      case 3:
+        return const ExploreScreen();
+      default:
+        return const ProfileScreen();
     }
   }
 }
@@ -115,40 +86,13 @@ class BottomNavigationView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isDating = model.settingAppData?.isDating == 1;
-    bool isSocialMedia = model.settingAppData?.isSocialMedia == 1;
-    List<ImageText> navList = [];
-
-    if (!isDating && !isSocialMedia) {
-      // Both off
-      navList = [
-        ImageText(AssetRes.icMessage, S.current.message),
-        ImageText(AssetRes.icProfile, S.current.profile),
-      ];
-    } else if (isDating && isSocialMedia) {
-      // Both on
-      navList = [
-        ImageText(AssetRes.icExplore, S.current.explore),
-        ImageText(AssetRes.icMatch, S.current.findMatch),
-        ImageText(AssetRes.icFeed, S.current.feed),
-        ImageText(AssetRes.icMessage, S.current.message),
-        ImageText(AssetRes.icProfile, S.current.profile),
-      ];
-    } else if (!isDating && isSocialMedia) {
-      // Social media only
-      navList = [
-        ImageText(AssetRes.icFeed, S.current.feed),
-        ImageText(AssetRes.icMessage, S.current.message),
-        ImageText(AssetRes.icProfile, S.current.profile),
-      ];
-    } else if (isDating && !isSocialMedia) {
-      // Dating only
-      navList = [
-        ImageText(AssetRes.icExplore, S.current.explore),
-        ImageText(AssetRes.icMatch, S.current.findMatch),
-        ImageText(AssetRes.icMessage, S.current.message),
-        ImageText(AssetRes.icProfile, S.current.profile),
-      ];
-    }
+    final List<ImageText> navList = [
+      ImageText(AssetRes.icMessage, 'Chats'),
+      ImageText(AssetRes.icProfileUser, 'Contacts'),
+      ImageText(AssetRes.icExplore, 'Discover'),
+      ImageText(AssetRes.icMatch, isDating ? S.current.findMatch : 'Explore'),
+      ImageText(AssetRes.icProfile, S.current.profile),
+    ];
     return SafeArea(
       top: false,
       child: SizedBox(

@@ -204,4 +204,26 @@ class Urls {
 
   // Social Media
   static const String myUserId = 'my_user_id';
+
+  // WeChat & E2EE Super App Endpoints
+  static const String e2eePrekeysPublish = '${ConstRes.aBaseUrl}e2ee/prekeys/publish';
+  static const String e2eePrekeysBundle = '${ConstRes.aBaseUrl}e2ee/prekeys/bundle/';
+  static const String e2eeMessageSend = '${ConstRes.aBaseUrl}e2ee/message/send';
+  static const String e2eeMessagePending = '${ConstRes.aBaseUrl}e2ee/message/pending';
+  static const String e2eeMessageAck = '${ConstRes.aBaseUrl}e2ee/message/ack';
+  static const String e2eeBlobUpload = '${ConstRes.aBaseUrl}e2ee/blob/upload';
+
+  static const String contactsList = '${ConstRes.aBaseUrl}contacts/list';
+  static const String contactsSearch = '${ConstRes.aBaseUrl}contacts/search';
+  static const String contactsRequestSend = '${ConstRes.aBaseUrl}contacts/request/send';
+  static const String contactsRequestList = '${ConstRes.aBaseUrl}contacts/request/list';
+  static const String contactsRequestRespond = '${ConstRes.aBaseUrl}contacts/request/respond';
+  static const String contactsRemark = '${ConstRes.aBaseUrl}contacts/remark';
+  static const String contactsDelete = '${ConstRes.aBaseUrl}contacts/delete';
+
+  static const String momentsPublish = '${ConstRes.aBaseUrl}moments/publish';
+  static const String momentsFeed = '${ConstRes.aBaseUrl}moments/feed';
+
+  static const String miniProgramsList = '${ConstRes.aBaseUrl}mini-programs/list';
+  static const String miniProgramDetail = '${ConstRes.aBaseUrl}mini-programs/detail/';
 }

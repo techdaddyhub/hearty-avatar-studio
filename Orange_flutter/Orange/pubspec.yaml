@@ -75,6 +75,7 @@ dependencies:
 
   #_______________ Networking ___________________#
   http: ^1.6.0
+  crypto: ^3.0.6
 
   #_______________ Subscription & In App Purchase ___________________#
   purchases_flutter: ^9.15.0

@@ -4,6 +4,8 @@ import 'package:orange_ui/generated/l10n.dart';
 import 'package:orange_ui/model/chat_and_live_stream/chat.dart';
 import 'package:orange_ui/screen/chat_screen/chat_screen_view_model.dart';
 import 'package:orange_ui/screen/chat_screen/widgets/bottom_input_bar.dart';
+import 'package:orange_ui/screen/chat_screen/widgets/wechat_ptt_bar.dart';
+import 'package:orange_ui/service/gateway/realtime_relay_client.dart';
 import 'package:orange_ui/screen/chat_screen/widgets/bottom_selected_item_bar.dart';
 import 'package:orange_ui/screen/chat_screen/widgets/chat_area.dart';
 import 'package:orange_ui/screen/chat_screen/widgets/chat_top_bar_area.dart';
@@ -73,11 +75,18 @@ class ChatScreen extends StatelessWidget {
                           ? _buildBlockedUserWidget(model)
                           : model.isBlockOther
                               ? const SizedBox()
-                              : BottomInputBar(
+                              : WeChatPttBar(
                                   msgController: model.textMsgController,
-                                  onShareBtnTap: model.onSendBtnTap,
-                                  onAddBtnTap: () => model.onPlusButtonClick(0),
-                                  onCameraTap: () => model.onPlusButtonClick(1),
+                                  onSendText: model.onSendBtnTap,
+                                  onPlusTap: () => model.onPlusButtonClick(0),
+                                  onVoiceRecorded: (file, duration) async {
+                                    final blobUrl = await RealtimeRelayClient.shared.uploadEncryptedBlob(file, 'audio/mp4');
+                                    model.firebaseMsgUpdate(
+                                      msgType: 'audio',
+                                      textMessage: '[Voice Note $duration"]',
+                                      image: blobUrl,
+                                    );
+                                  },
                                 ),
                 ),
               ),

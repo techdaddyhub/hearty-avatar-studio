@@ -1,10 +1,15 @@
 <?php
 
 use App\Http\Controllers\AvatarController;
+use App\Http\Controllers\BlindRelayController;
 use App\Http\Controllers\CallController;
+use App\Http\Controllers\ContactsController;
 use App\Http\Controllers\DiamondPackController;
+use App\Http\Controllers\E2EEKeyController;
 use App\Http\Controllers\InterestController;
 use App\Http\Controllers\LiveApplicationController;
+use App\Http\Controllers\MiniProgramController;
+use App\Http\Controllers\MomentsController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ObsController;
 use App\Http\Controllers\PackageController;
@@ -166,3 +171,37 @@ Route::prefix('v1')->middleware('checkHeader')->group(function () {
     Route::post('devices/register', [TelemetryController::class, 'registerDevice']);
     Route::post('telemetry/metrics', [TelemetryController::class, 'recordMetrics']);
 });
+
+/*|--------------------------------------------------------------------------|
+  | WeChat E2EE Super App Routes                                             |
+  |--------------------------------------------------------------------------|*/
+
+Route::middleware('checkHeader')->group(function () {
+    // Cryptographic Pre-Keys (X3DH)
+    Route::post('e2ee/prekeys/publish', [E2EEKeyController::class, 'publishPreKeys']);
+    Route::post('e2ee/prekeys/bundle/{userId}', [E2EEKeyController::class, 'getPreKeyBundle']);
+
+    // Zero-Knowledge Blind Message Relay & Mailbox
+    Route::post('e2ee/message/send', [BlindRelayController::class, 'sendEncryptedMessage']);
+    Route::post('e2ee/message/pending', [BlindRelayController::class, 'getPendingMessages']);
+    Route::post('e2ee/message/ack', [BlindRelayController::class, 'acknowledgeMessage']);
+    Route::post('e2ee/blob/upload', [BlindRelayController::class, 'uploadEncryptedBlob']);
+
+    // WeChat Contacts & Friend Requests
+    Route::post('contacts/list', [ContactsController::class, 'getContacts']);
+    Route::post('contacts/search', [ContactsController::class, 'searchUser']);
+    Route::post('contacts/request/send', [ContactsController::class, 'sendContactRequest']);
+    Route::post('contacts/request/list', [ContactsController::class, 'getContactRequests']);
+    Route::post('contacts/request/respond', [ContactsController::class, 'respondContactRequest']);
+    Route::post('contacts/remark', [ContactsController::class, 'updateRemark']);
+    Route::post('contacts/delete', [ContactsController::class, 'deleteContact']);
+
+    // WeChat Moments (Encrypted Feed)
+    Route::post('moments/publish', [MomentsController::class, 'publishMoment']);
+    Route::post('moments/feed', [MomentsController::class, 'getFeed']);
+
+    // WeChat Mini-Programs
+    Route::post('mini-programs/list', [MiniProgramController::class, 'getMiniPrograms']);
+    Route::post('mini-programs/detail/{appId}', [MiniProgramController::class, 'getMiniProgramDetail']);
+});
+

@@ -59,7 +59,7 @@ class BaseSelectSheet<T> extends StatelessWidget {
                   if (items.isEmpty) {
                     return Center(
                       child: Text(
-                        S.of(context).noDataFound,
+                        S.of(context).noData,
                         style: const TextStyle(
                           fontFamily: FontRes.regular,
                           fontSize: 16,
